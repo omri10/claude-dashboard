@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one ledger column; account filter, value, then the scoreboard vs benchmark, then why, then gains/tax, income, allocation, detail tables */
+:root{
+  --bg:#f3f5f4; --card:#ffffff; --ink:#15201d; --sub:#5b6964; --line:#dde4e1;
+  --accent:#1f5f75; --accent-soft:#e2eef2; --bench:#8a6fb0;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100; --c5:#e87ba4; --c6:#008300; --c7:#6250d6; --c-other:#a3aeaa; --c-cash:#d3dad7;
+  --up:#18794e; --up-soft:#e3f3ea; --down:#b4372f; --down-soft:#fbe8e6; --warn:#8a5a00; --warn-soft:#fbf0d9;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1514; --card:#161e1c; --ink:#e6eeeb; --sub:#93a39e; --line:#26312e;
+  --accent:#6fb4cc; --accent-soft:#16303a; --bench:#b9a3e0; --up:#4cc38a; --up-soft:#123224; --down:#f07a70; --down-soft:#3a1a17; --warn:#e8b850; --warn-soft:#33280f; --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c-other:#5f6d69; --c-cash:#3a4643; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1514; --card:#161e1c; --ink:#e6eeeb; --sub:#93a39e; --line:#26312e;
+  --accent:#6fb4cc; --accent-soft:#16303a; --bench:#b9a3e0; --up:#4cc38a; --up-soft:#123224; --down:#f07a70; --down-soft:#3a1a17; --warn:#e8b850; --warn-soft:#33280f; --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --c6:#008300; --c7:#9085e9; --c-other:#5f6d69; --c-cash:#3a4643; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:980px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.down{color:var(--down)}.muted{color:var(--sub);font-size:12px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font:700 20px/1 var(--display);letter-spacing:-.01em}.brand span{color:var(--accent)}
+.asof{font-size:12px;color:var(--sub)}
+.pill{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--warn-soft);color:var(--warn)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:500 13px var(--body);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--card)}
+.chip .ck{font-size:11px}
+button:focus-visible,.th:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:0 0 10px}
+h2.sec{font:700 22px/1.2 var(--display);letter-spacing:-.01em;margin:12px 0 -4px;text-wrap:balance}
+/* jump menu */
+.jump{position:sticky;top:0;z-index:20;min-width:0;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;gap:6px;align-items:center}
+.gseg{flex:none}.gseg button{font-weight:600}
+@media (max-width:640px){.jump{flex-wrap:wrap}.gseg{width:100%;display:flex}.gseg button{flex:1}}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}@media (max-width:640px){.pgrid{grid-template-columns:1fr}}
+.psub{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:16px 0 6px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.prow:first-of-type{border-top:0}
+.prow .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.prow .nm{display:block}
+.evt{padding:8px 10px;border-radius:8px;background:var(--bg);font-size:14px;margin-top:6px}.evt.bad{background:var(--down-soft);color:var(--down)}.evt.good{background:var(--up-soft);color:var(--up)}
+.jump .jl{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}.jump .jl::-webkit-scrollbar{display:none}
+.jump a{flex:none;font-size:13px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;white-space:nowrap}
+.jump a:hover{border-color:var(--accent)}.jump a.cur{background:var(--accent);border-color:var(--accent);color:var(--card)}
+.jump .jall{flex:none;font-size:12px;padding:5px 9px;border-radius:8px;border:0;background:none;color:var(--sub);cursor:pointer;white-space:nowrap}.jump .jall:hover{color:var(--ink)}
+section.card,h2.sec{scroll-margin-top:64px}
+/* collapsible cards */
+.cbtn{flex:none;margin-left:auto;border:0;background:none;color:var(--sub);cursor:pointer;width:28px;height:28px;border-radius:8px;font-size:16px;line-height:1;display:inline-grid;place-items:center;transition:transform .15s}
+.cbtn:hover{background:var(--accent-soft);color:var(--ink)}
+.chwrap{display:flex;align-items:center;gap:8px;margin-bottom:10px}.chwrap .label{flex:1;min-width:0}
+section.card.collapsed .cbtn{transform:rotate(-90deg)}
+section.card.collapsed > :not(:first-child){display:none!important}
+section.card.collapsed > :first-child{margin-bottom:0!important}
+section.card.collapsed > :first-child > :not(.label):not(.cbtn):not(.muted){display:none!important}
+section.card.collapsed{padding-bottom:14px}
+section.card.collapsed .chead{cursor:pointer}
+.hero .total{font:700 clamp(34px,8vw,52px)/1.05 var(--display);letter-spacing:-.02em;margin:2px 0 6px}
+.chg{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:15px}
+.bench{font-size:13px;color:var(--sub)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{font:500 12px var(--body);color:var(--sub);background:none;border:1px solid transparent;border-radius:8px;padding:5px 10px;cursor:pointer}
+.seg button[aria-pressed="true"]{color:var(--accent);background:var(--accent-soft)}
+svg.chart{width:100%;height:180px;display:block}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.stat{border-top:1px solid var(--line);padding-top:8px;min-width:0}
+.stat b{display:block;font:500 16px var(--mono)}
+.stat small{font-size:11px;color:var(--sub);letter-spacing:.04em;text-transform:uppercase}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border-bottom:0}.row.off{opacity:.45}
+.alloc{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:4px 0 12px;gap:2px}
+.movers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
+.flag{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:14px}
+.flag.warn{background:var(--warn-soft);color:var(--warn)}.flag.info{background:var(--accent-soft);color:var(--accent)}.flag.bad{background:var(--down-soft);color:var(--down)}.flag.good{background:var(--up-soft);color:var(--up)}
+.fgh{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--sub);margin:6px 0 -2px}.fgh:first-child{margin-top:0}
+.sus{color:var(--down);font-weight:800;margin-right:4px;cursor:help}.susr{display:block;color:var(--down);font-size:12.5px;margin-top:2px}tr.susrow td{background:var(--down-soft)}
+.flags{display:grid;gap:8px}
+.pie{display:grid;grid-template-columns:minmax(180px,260px) 1fr;gap:24px;align-items:start}
+.pie > div:first-child{position:sticky;top:12px}
+@media (max-width:640px){.pie{grid-template-columns:1fr;justify-items:center}.pie > div:first-child{position:static}}
+.pie svg{width:100%;max-width:260px;height:auto;display:block}
+.pie path{stroke:var(--card);stroke-width:2;cursor:pointer;transition:opacity .12s}
+.pie svg.hov path:not(.on){opacity:.35}
+.pleg{width:100%;border-collapse:collapse;font-size:14px}
+.pleg td{padding:6px 6px;border-top:1px solid var(--line)}.pleg tr:first-child td{border-top:0}
+.pleg tr{cursor:default}.pleg tr.on td{background:var(--accent-soft)}
+.pleg{table-layout:auto}.pleg td:first-child{white-space:normal;width:100%}.pleg td{white-space:nowrap}
+@media (max-width:640px){.pleg .sub{display:none}}
+.pl-chev{display:inline-block;margin-left:6px;font-style:normal;color:var(--sub);transition:transform .15s}
+.pl-toggle{cursor:pointer}.pl-toggle:hover td{background:var(--accent-soft)}.pl-sub td{font-size:13px;padding-top:4px;padding-bottom:4px}
+.pl-scroll{max-height:260px;overflow:auto;border-top:1px solid var(--line)}.pl-scroll .pleg td{border-top:1px solid var(--line)}
+#piecard{position:relative}.pietip{position:absolute;z-index:5;min-width:220px;max-width:280px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:10px 12px;font-size:13px;pointer-events:none}
+.pietip table{width:100%;border-collapse:collapse;margin:6px 0}.pietip td{padding:3px 0}.pietip .pc{text-align:right;font-weight:600;padding:0 8px}.pietip .dv{text-align:right;color:var(--sub)}.pietip .muted{font-size:12px}
+.pleg .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.pleg .pc{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.pleg .dv{color:var(--sub);text-align:right;font-variant-numeric:tabular-nums}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.tools input,.tools select,select.inp{font:14px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:100%}
+.tools input[type=search]{width:180px}
+input.pc{width:58px;font:13px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 6px;text-align:right}
+.tablewrap{overflow-x:auto;margin:0 -18px;padding:0 18px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+.wide{min-width:640px}
+th{font:500 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--sub);text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+.th{cursor:pointer;user-select:none}
+td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+td .sym{font:500 14px var(--mono)}
+td .nm{display:block;font-size:11.5px;color:var(--sub);max-width:170px;overflow:hidden;text-overflow:ellipsis}
+td.cell{font:500 13px var(--mono)}
+td.cell.pos{background:var(--up-soft);color:var(--up)}td.cell.neg{background:var(--down-soft);color:var(--down)}
+tr.sel td{font-weight:500}
+.wbar{display:inline-block;height:4px;background:var(--accent);border-radius:2px;vertical-align:middle;margin-right:6px;opacity:.7}
+.tag{font:500 10.5px var(--body);letter-spacing:.05em;padding:2px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
+.tag.st{background:var(--warn-soft);color:var(--warn)}
+.gbox{border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.gbig{font:700 26px/1.1 var(--display);letter-spacing:-.01em;margin:2px 0 4px}
+.split{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-top:8px}
+.split span{display:flex;gap:6px;align-items:center}
+.hbars{display:grid;gap:6px;margin-top:10px}
+.hbar{display:grid;grid-template-columns:64px minmax(0,1fr) 84px;gap:8px;align-items:center;font-size:12.5px}
+.track{height:8px;background:var(--bg);border-radius:4px;position:relative;overflow:hidden}
+.track i{position:absolute;top:0;bottom:0;border-radius:4px}
+.track.mid::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--sub);opacity:.5}
+.verdict{display:grid;gap:4px;padding:16px;border-radius:12px;margin:4px 0 14px}
+.verdict.pos{background:var(--up-soft);color:var(--up)}.verdict.neg{background:var(--down-soft);color:var(--down)}
+.verdict b{font:700 clamp(22px,5vw,30px)/1.15 var(--display);letter-spacing:-.01em}
+.verdict span{font-size:14px}
+.legendline{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-top:4px}
+.legendline i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px}
+.meter{height:10px;background:var(--bg);border-radius:6px;overflow:hidden;margin:8px 0 6px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.note{font-size:12px;color:var(--sub);margin:10px 0 0;max-width:70ch}
+.act .type{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--sub);width:72px;flex:none}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+.chk{display:flex;gap:6px;align-items:center;font-size:13px}
+.cwrap{position:relative;padding-left:44px}
+.cwrap svg.chart{touch-action:pan-y;cursor:crosshair}
+.cx-y{position:absolute;left:0;top:0;width:40px;height:calc(100% - 20px);pointer-events:none}
+.cx-y span{position:absolute;right:4px;transform:translateY(-50%);font:11px var(--mono);color:var(--sub)}
+.cx-plot{position:absolute;left:44px;right:0;top:0;height:calc(100% - 20px);pointer-events:none}
+.cx-line{position:absolute;top:0;bottom:0;width:1px;background:var(--sub);opacity:.55}
+.cx-dots{position:absolute;inset:0}
+.cx-bar{position:absolute;top:0;bottom:0;background:var(--sub);opacity:.08}
+.cx-dots i{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--card)}
+.cx-axis{position:relative;height:20px;font:11px var(--mono);color:var(--sub)}
+.cx-axis span{position:absolute;top:4px;white-space:nowrap}
+.cx-tip{position:absolute;top:-6px;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.12);min-width:170px}
+.cx-tip div{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.cx-tip div span{margin-left:auto;padding-left:12px}
+.cx-tip b{display:inline-block;width:8px;height:8px;border-radius:2px}
+.cx-tip .cx-date{font-weight:500;margin-bottom:4px}
+.cx-tip .cx-diff{border-top:1px solid var(--line);margin-top:4px;padding-top:4px;color:var(--sub)}
+tr.grp td{font-weight:500;font-size:14px;border-bottom:1px solid var(--ink);padding-top:14px}
+details.flag{display:block;padding:0}
+details.flag summary{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;cursor:pointer;list-style:none}
+details.flag summary::-webkit-details-marker{display:none}
+details.flag summary span{flex:1}
+details.flag .chev{font-style:normal;transition:transform .15s;opacity:.7}
+details.flag[open] .chev{transform:rotate(90deg)}
+details.flag .fd{padding:0 12px 12px 30px;color:var(--ink);font-size:13.5px}
+details.flag .fd p{margin:6px 0;max-width:72ch}
+details.flag .ft{font-size:13px;background:var(--card);border-radius:8px;margin:6px 0}
+details.flag .ft td,details.flag .ft th{padding:6px 8px}
+[hidden]{display:none!important}
+.lock{min-height:80vh;display:grid;place-items:center}
+.lockbox{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.lockbox p{margin:0;color:var(--sub);font-size:14px}
+footer{font-size:12px;color:var(--sub);text-align:center}
+@media (max-width:640px){.grid2,.movers{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+
+<div id="lock" class="lock" hidden>
+  <div class="lockbox">
+    <div class="brand" style="margin-bottom:14px">Port<span>folio</span></div>
+    <p id="lockmsg">This dashboard is encrypted. Open it with your private link, or paste the access key.</p>
+    <form id="lockform" autocomplete="off">
+      <label for="lockkey" class="label" style="display:block;margin:12px 0 6px">Access key</label>
+      <input id="lockkey" type="password" spellcheck="false" placeholder="Paste key" style="width:100%;font:14px var(--mono);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)">
+      <label class="chk" style="margin-top:10px"><input id="lockremember" type="checkbox" checked> Remember on this device</label>
+      <p id="lockerr" class="down" style="font-size:13px;min-height:1.2em;margin:8px 0"></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="submit" class="chip" aria-pressed="true">Unlock</button><button type="button" class="chip" id="locksample">View sample data</button></div>
+    </form>
+  </div>
+</div>
+<div class="wrap" id="app" hidden>
+  <header>
+    <div class="brand">Port<span>folio</span></div>
+    <div style="display:flex;gap:8px;align-items:center"><span class="pill" id="sample" hidden>Sample data</span><span class="asof" id="asof"></span></div>
+  </header>
+
+  <nav class="chips" id="acctchips" aria-label="Accounts shown"></nav>
+  <nav class="jump" id="jump" aria-label="Jump to section"><div class="seg gseg" id="gperiod" role="group" aria-label="Period for the whole page"><button data-g="today">Today</button><button data-g="wtd">Week</button><button data-g="mtd">Month</button><button data-g="ytd">YTD</button><button data-g="y1">1Y</button></div><div class="jl" id="jumplist"></div><button class="jall" id="jumpall" type="button">Collapse all</button></nav>
+  <button id="lockout" class="chip" hidden style="justify-self:end;margin-top:-8px">Forget key on this device</button>
+
+  <section class="card" aria-labelledby="h-day" id="daycard">
+    <div class="controls"><p class="label" id="h-day" style="margin:0">Today</p><span class="muted" id="dayasof"></span></div>
+    <div class="verdict" id="dayverdict"></div>
+    <div id="daydetail">
+    <div class="tablewrap"><table style="min-width:480px"><thead><tr><th>Today</th><th>Change</th><th>Return</th><th>S&amp;P 500</th><th>vs S&amp;P</th></tr></thead><tbody id="dayslots"></tbody></table></div>
+    <p class="label" style="margin-top:16px" id="dayacctlabel">By account · latest</p>
+    <div class="tablewrap"><table style="min-width:480px"><thead><tr><th>Account</th><th>Value</th><th>Change</th><th>Return</th><th>vs S&amp;P</th></tr></thead><tbody id="dayaccts"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-per" id="periodcard" hidden>
+    <div class="controls"><p class="label" id="h-per" style="margin:0">This week</p><span class="muted" id="perasof"></span></div>
+    <div class="verdict" id="perverdict"></div>
+    <div class="stats" id="perstats" style="margin-top:12px"></div>
+    <div id="perbody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-nw" id="nwcard" hidden>
+    <div class="controls"><p class="label" id="h-nw" style="margin:0">All accounts · net worth</p><span class="muted" id="nwasof"></span></div>
+    <div class="stats" id="nwstats" style="margin-top:0"></div>
+    <div id="nwchartwrap" style="margin-top:14px"><svg class="chart" id="nwchart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" style="height:150px"></svg></div>
+    <p class="muted" id="nwchartnote" style="margin:6px 0 0"></p>
+    <div class="tablewrap" style="margin-top:12px"><table style="min-width:520px"><thead><tr><th>Account</th><th>Balance</th><th>Updated</th></tr></thead><tbody id="nwtable"></tbody></table></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-dbd" id="dayhist">
+      <p class="label" id="h-dbd">Day by day · closing</p>
+      <svg class="chart" id="daychart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" style="height:150px"></svg>
+      <div class="legendline"><span><i style="background:var(--accent)"></i>You</span><span><i style="background:var(--bench)"></i>S&amp;P 500</span></div>
+      <div class="stats" id="daystats"></div>
+      <div class="tablewrap" style="margin-top:10px"><table style="min-width:480px"><thead><tr><th>Date</th><th>Change</th><th>Return</th><th>S&amp;P 500</th><th>vs S&amp;P</th></tr></thead><tbody id="daytable"></tbody></table></div>
+    </section>
+
+  <section class="card hero" aria-labelledby="h-total">
+    <p class="label" id="h-total">Total value</p>
+    <div class="total num" id="total">—</div>
+    <div class="chg"><span class="num" id="day">—</span><span class="bench" id="benchday"></span></div>
+    <div class="seg" id="ranges" role="group" aria-label="Chart range" style="margin:16px 0 4px">
+      <button data-r="7">1W</button><button data-r="30" aria-pressed="true">1M</button><button data-r="90">3M</button><button data-r="ytd">YTD</button><button data-r="365">1Y</button><button data-r="all">All</button>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 600 180" preserveAspectRatio="none" role="img"></svg>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-pie" id="piecard">
+    <div class="controls"><p class="label" id="h-pie" style="margin:0">What you own</p>
+      <div class="seg" id="piecash" role="group" aria-label="Cash"><button data-c="1" aria-pressed="true">Include cash</button><button data-c="0" aria-pressed="false">Investments only</button></div></div>
+    <div class="pie"><div><svg id="piesvg" viewBox="0 0 220 220" role="img" aria-labelledby="h-pie"></svg></div><table class="pleg" id="pieleg"></table></div>
+    <p class="note" id="pienote"></p>
+    <div class="pietip" id="pietip" role="tooltip" hidden></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-flags" id="flagcard">
+    <p class="label" id="h-flags">Needs attention</p>
+    <div class="flags" id="flags"></div>
+  </section>
+
+  <h2 class="sec" id="sec-market">Are you beating the market?</h2>
+
+  <section class="card" aria-labelledby="h-perf">
+    <div class="controls">
+      <p class="label" id="h-perf" style="margin:0">Performance vs benchmark</p>
+      <select class="inp" id="benchsel" aria-label="Benchmark"></select>
+    </div>
+    <div class="seg" id="pranges" role="group" aria-label="Performance period" style="margin-bottom:12px">
+      <button data-p="mtd">MTD</button><button data-p="30">1M</button><button data-p="ytd" aria-pressed="true">YTD</button><button data-p="365">1Y</button><button data-p="1095">3Y</button><button data-p="all">All</button>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <svg class="chart" id="shadowchart" viewBox="0 0 600 180" preserveAspectRatio="none" role="img"></svg>
+    <div class="legendline"><span><i style="background:var(--accent)"></i>Your accounts</span><span><i style="background:var(--bench)"></i><span id="shadowname">Same deposits in S&amp;P 500</span></span></div>
+    <div class="stats" id="perfstats"></div>
+    <div class="stats" id="riskstats"></div>
+    <p class="note">Time-weighted return measures how your investments did, ignoring when you added or withdrew money. It's the fair comparison against an index. Money-weighted return (IRR) is your personal return including deposit timing. The shadow line puts your starting balance and every deposit and withdrawal into the benchmark on the same days. Sharpe ratio assumes a 4% risk-free rate.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-cmp">
+    <p class="label" id="h-cmp">Accounts compared · <span id="cmpperiod"></span></p>
+    <svg class="chart" id="cmpchart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" style="height:220px"></svg>
+    <div class="legendline" id="cmplegend"></div>
+    <p class="note" id="cmpnote"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-off" id="offcard" hidden>
+    <p class="label" id="h-off">Reported returns vs S&amp;P 500 · since each account opened</p>
+    <div class="tablewrap"><table class="wide"><thead><tr><th>Account</th><th>Since</th><th>Account</th><th>S&amp;P 500</th><th>Difference</th><th>Per year</th></tr></thead><tbody id="off"></tbody></table></div>
+    <p class="label" style="margin-top:18px">By calendar year · green beat the S&amp;P 500</p>
+    <div class="tablewrap"><table class="wide"><thead id="offyh"></thead><tbody id="offy"></tbody></table></div>
+    <p class="note" id="offnote"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-lead">
+    <p class="label" id="h-lead">Account leaderboard · <span id="leadperiod"></span></p>
+    <div class="tablewrap"><table class="wide"><thead><tr><th>Account</th><th>Return</th><th>Benchmark</th><th>Excess</th><th>IRR</th><th>vs shadow</th></tr></thead><tbody id="lead"></tbody></table></div>
+    <p class="label" style="margin-top:18px">Excess return vs <span id="gridbench"></span> by period</p>
+    <div class="tablewrap"><table class="wide"><thead><tr><th>Account</th><th>1M</th><th>YTD</th><th>1Y</th><th>3Y*</th><th>All</th></tr></thead><tbody id="grid"></tbody></table></div>
+    <p class="note" id="gridnote"></p>
+  </section>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-attr">
+      <p class="label" id="h-attr">What drove the difference</p>
+      <div class="hbars" id="attr"></div>
+      <p class="note">Each bar is the position's weight × (its return − benchmark return), in percentage points. Uses current weights, so treat it as an estimate.</p>
+    </section>
+    <section class="card" aria-labelledby="h-sf">
+      <p class="label" id="h-sf">Stock picks vs index funds</p>
+      <div class="hbars" id="sf"></div>
+      <p class="note" id="sfnote"></p>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-cash">
+      <p class="label" id="h-cash">Cash drag</p>
+      <div class="gbig num" id="cashdrag">—</div>
+      <div class="muted" id="cashsub"></div>
+    </section>
+    <section class="card" aria-labelledby="h-fee">
+      <p class="label" id="h-fee">Fee drag</p>
+      <div class="gbig num down" id="feedrag">—</div>
+      <div class="muted" id="feesub"></div>
+      <div id="feerows" style="margin-top:8px"></div>
+    </section>
+  </div>
+
+  <h2 class="sec" id="sec-gains">Gains and taxes</h2>
+
+  <section class="card" aria-labelledby="h-gains">
+    <p class="label" id="h-gains">Gains</p>
+    <div class="grid2">
+      <div class="gbox"><div class="muted">Unrealized · open positions</div><div class="gbig num" id="unrl">—</div><div class="muted" id="unrlsub"></div><div class="split" id="unrlsplit"></div></div>
+      <div class="gbox"><div class="muted">Realized · <span id="ylabel"></span></div><div class="gbig num" id="rlz">—</div><div class="muted" id="rlzsub"></div><div class="split" id="rlzsplit"></div></div>
+    </div>
+    <div class="hbars" id="ybars"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-tax">
+      <p class="label" id="h-tax">Estimated tax on realized gains · taxable accounts</p>
+      <div class="gbig num" id="tax">—</div>
+      <div class="muted" id="taxsub"></div>
+      <div class="split" style="margin-top:12px">
+        <label class="chk">Short-term rate <input class="pc" id="strate" type="number" min="0" max="50" step="1" value="35">%</label>
+        <label class="chk">Long-term rate <input class="pc" id="ltrate" type="number" min="0" max="30" step="1" value="15">%</label>
+        <label class="chk"><input id="niit" type="checkbox" checked> 3.8% NIIT</label>
+      </div>
+      <p class="note">Federal only; Florida has no state income tax. Sales inside IRAs and Roth accounts aren't taxed and are excluded. Set your own brackets. This isn't tax advice, so confirm with your CPA.</p>
+    </section>
+    <section class="card" aria-labelledby="h-wash">
+      <p class="label" id="h-wash">Wash-sale check</p>
+      <div id="wash"></div>
+      <p class="note">A loss sale is disallowed if you buy the same security within 30 days before or after, in any account. Buying it back inside an IRA makes the loss permanently disallowed.</p>
+    </section>
+  </div>
+
+  <h2 class="sec" id="sec-income">Income and contributions</h2>
+
+  <section class="card" aria-labelledby="h-inc">
+    <p class="label" id="h-inc">Dividends and interest · last 12 months</p>
+    <svg class="chart" id="incchart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" style="height:150px"></svg>
+    <div class="stats" id="incstats"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-contrib">
+      <p class="label" id="h-contrib">What you put in vs what the market added</p>
+      <svg class="chart" id="contribchart" viewBox="0 0 600 180" preserveAspectRatio="none" role="img" style="height:150px"></svg>
+      <div class="legendline"><span><i style="background:var(--accent)"></i>Value</span><span><i style="background:var(--sub)"></i>Money you put in</span></div>
+      <div class="stats" id="contribstats" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>
+    </section>
+    <section class="card" aria-labelledby="h-roth">
+      <p class="label" id="h-roth">Roth IRA contributions · <span id="rothyear"></span></p>
+      <div class="gbig num" id="rothamt">—</div>
+      <div class="meter"><i id="rothbar"></i></div>
+      <div class="muted" id="rothsub"></div>
+      <div id="rothhist" style="margin-top:10px"></div>
+    </section>
+  </div>
+
+  <h2 class="sec" id="sec-holdings">Allocation and holdings</h2>
+
+  <section class="card" aria-labelledby="h-alloc">
+    <p class="label" id="h-alloc">Allocation</p>
+    <div class="alloc" id="allocbar"></div>
+    <div class="tablewrap"><table style="min-width:520px"><thead><tr><th>Asset class</th><th>Value</th><th>Share</th></tr></thead><tbody id="rebal"></tbody></table></div>
+    <p class="note" id="targetnote"></p>
+  </section>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-acc"><p class="label" id="h-acc">Accounts</p><div id="accounts"></div></section>
+    <section class="card" aria-labelledby="h-mov"><p class="label" id="h-mov">Today's movers</p><div id="movers"></div></section>
+  </div>
+
+  <section class="card" aria-labelledby="h-hold">
+    <div class="tools"><p class="label" id="h-hold" style="margin:0">Holdings</p><input id="q" type="search" placeholder="Filter by symbol" aria-label="Filter holdings"></div>
+    <div class="tablewrap"><table style="min-width:760px"><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-real">
+    <div class="tools"><p class="label" id="h-real" style="margin:0">Realized sales</p><select id="year" aria-label="Tax year"></select></div>
+    <div class="tablewrap"><table style="min-width:560px"><thead><tr><th>Sold</th><th>Qty</th><th>Proceeds</th><th>Cost basis</th><th>Gain</th><th>Term</th></tr></thead><tbody id="rbody"></tbody></table></div>
+  </section>
+
+  <section class="card act" aria-labelledby="h-act">
+    <div class="tools"><p class="label" id="h-act" style="margin:0">Activity</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <select id="actrange" aria-label="Date range"><option value="today">Today</option><option value="wtd">This week</option><option value="mtd">This month</option><option value="30">Last 30 days</option><option value="60">Last 60 days</option><option value="90">Last 90 days</option><option value="ytd">Year to date</option><option value="365">Last 12 months</option><option value="all">All</option><option value="custom">Custom…</option></select>
+        <span id="actcustom" hidden style="display:inline-flex;gap:6px;align-items:center"><input id="actfrom" type="date" aria-label="From date" class="inp" style="font:13px var(--body);padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"><span class="muted">to</span><input id="actto" type="date" aria-label="To date" style="font:13px var(--body);padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"></span>
+        <input id="actq" type="search" placeholder="Symbol or text" aria-label="Search activity" style="width:150px">
+      </div>
+    </div>
+    <div class="chips" id="acttypes" role="group" aria-label="Activity type" style="margin-bottom:10px"></div>
+    <div class="split" id="actsum" style="margin:0 0 8px"></div>
+    <div class="tablewrap"><table style="min-width:820px"><thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Symbol</th><th>Qty</th><th>Price</th><th>Amount</th><th>Gain/loss</th></tr></thead><tbody id="activity"></tbody></table></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap"><span class="muted" id="actcount"></span><button id="actmore" class="chip" hidden>Show more</button></div>
+    <p class="note" id="actnote"></p>
+  </section>
+
+  <footer>Read-only view. Updated automatically on market days.</footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const usd=(v,d=0)=>v==null||!isFinite(v)?"—":(v<0?"−":"")+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const sgn=(v,d=0)=>v==null||!isFinite(v)?"—":(v>=0?"+":"−")+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=(v,d=2)=>isFinite(v)?(v>=0?"+":"−")+Math.abs(v).toFixed(d)+"%":"—";
+const pp=v=>isFinite(v)?(v>=0?"+":"−")+Math.abs(v).toFixed(1)+" pts":"—";
+const cls=v=>v>=0?"up":"down";
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const COLORS=["var(--accent)","#6a8f3a","#b07a2a","#8a6fb0","#5b6964","#c0605a"];
+const TODAY=new Date(),YEAR=TODAY.getFullYear();
+const isLong=d=>!!d&&(TODAY-new Date(d))/864e5>365;
+const IRA_LIMIT={2023:6500,2024:7000,2025:7000,2026:7500};
+const fmtD=(d,y)=>new Date(d+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:y?"numeric":undefined});
+const PLABEL={mtd:"Month to date",30:"1 month",ytd:"Year to date",365:"1 year",1095:"3 years",all:"Since tracking began"};
+
+/* ---------- sample data (replaced by data.json from the Mac app) ---------- */
+function sample(){
+  let s=42;const R=()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  const g=()=>{let u=0;while(!u)u=R();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*R())};
+  const A=[{name:"Taxable A ··0001",cash:31200,taxable:true,feePct:0.85,type:"Taxable"},{name:"Roth IRA ··0002",cash:6400,taxable:false,feePct:0,type:"Roth"},{name:"Retirement C ··0003",cash:4580,taxable:false,feePct:0,type:"IRA"}];
+  const days=[];for(let d=new Date("2023-01-03T12:00");d<=TODAY;d.setDate(d.getDate()+1))if(d.getDay()%6)days.push(d.toISOString().slice(0,10));
+  const FL={};const addF=(d,a,amt)=>{const k=days.find(x=>x>=d);if(!k)return;(FL[k]=FL[k]||{})[a]=((FL[k]||{})[a]||0)+amt};
+  let ym="";days.forEach(d=>{if(d.slice(0,7)!==ym){ym=d.slice(0,7);addF(d,A[0].name,2000)}});
+  addF("2024-06-03",A[0].name,5000);addF("2025-03-03",A[0].name,-20000);addF("2026-10-23",A[0].name,5000);
+  addF("2024-01-16",A[1].name,7000);addF("2025-01-15",A[1].name,7000);addF("2026-01-15",A[1].name,5000);
+  const B={sp:[3850],ndx:[10900],world:[95],b6040:[100]};const V={},start=[420000,230000,210000];
+  A.forEach((a,i)=>V[a.name]=[start[i]]);
+  for(let t=1;t<days.length;t++){
+    const rs=0.00055+0.0105*g(),rb=0.00012+0.0025*g(),rn=0.0001+1.1*rs+0.004*g(),rw=0.0001+0.8*rs+0.005*g();
+    B.sp.push(B.sp[t-1]*(1+rs));B.ndx.push(B.ndx[t-1]*(1+rn));B.world.push(B.world[t-1]*(1+rw));B.b6040.push(B.b6040[t-1]*(1+0.6*rs+0.4*rb));
+    const r=[0.92*rs+0.004*g()-0.0085/252,0.55*rn+0.45*rs+0.00005+0.004*g(),0.55*rs+0.45*rb-0.00005+0.003*g()];
+    A.forEach((a,i)=>V[a.name].push(V[a.name][t-1]*(1+r[i])+((FL[days[t]]||{})[a.name]||0)));
+  }
+  const history=days.map((d,t)=>{const by={},fl={};A.forEach(a=>{by[a.name]=Math.round(V[a.name][t]);if(FL[d]&&FL[d][a.name])fl[a.name]=FL[d][a.name]});return{d,by,fl}});
+  const MK={NVDA:["NVIDIA Corp","US stocks","stock",190.4,2.6,0,[6.8,41.2,58.0]],AAPL:["Apple Inc","US stocks","stock",231.2,0.6,0,[2.1,4.9,8.3]],VOO:["Vanguard S&P 500 ETF","US stocks","fund",548.2,0.4,0.03,[1.9,15.8,19.6]],COHR:["Coherent Corp","US stocks","stock",104.1,2.8,0,[12.4,22.0,61.5]],TSLA:["Tesla Inc","US stocks","stock",251.7,-2.9,0,[-8.2,-31.4,-12.0]],VXUS:["Vanguard Total Intl ETF","Intl stocks","fund",66.9,-0.1,0.05,[-0.6,18.9,16.2]],QQQ:["Invesco QQQ Trust","US stocks","fund",512.3,0.7,0.20,[2.8,19.4,24.1]],MSFT:["Microsoft Corp","US stocks","stock",428.9,0.3,0,[-1.2,11.5,6.4]],AMZN:["Amazon.com Inc","US stocks","stock",198.5,-0.6,0,[-3.0,-6.1,2.9]],BND:["Vanguard Total Bond ETF","Bonds","fund",73.4,0.1,0.03,[0.4,4.1,5.0]],SGOV:["iShares 0-3M Treasury ETF","Cash & T-bills","fund",100.6,0,0.09,[0.35,3.4,4.4]]};
+  const P=[[0,"NVDA",.22,.33,"2022-11-03"],[0,"AAPL",.14,.64,"2021-06-14"],[0,"VOO",.30,.73,"2023-02-21"],[0,"COHR",.08,.68,"2026-03-09"],[0,"TSLA",.06,1.13,"2026-01-12"],[0,"VXUS",.20,.87,"2023-08-01"],[1,"QQQ",.45,.62,"2023-01-20"],[1,"MSFT",.20,.59,"2020-09-30"],[1,"AMZN",.15,.65,"2022-05-10"],[1,"NVDA",.20,.24,"2022-08-15"],[2,"VOO",.35,.65,"2021-12-02"],[2,"BND",.40,1.05,"2022-01-18"],[2,"VXUS",.15,.92,"2022-03-08"],[2,"SGOV",.10,1.0,"2026-07-01"]];
+  const last=history.length-1;
+  const holdings=P.map(([ai,sym,w,cr,acq])=>{const m=MK[sym],a=A[ai],inv=V[a.name][last]-a.cash,qty=Math.round(w*inv/m[3]),value=qty*m[3];
+    return{symbol:sym,name:m[0],cls:m[1],kind:m[2],account:a.name,qty,price:m[3],value,dayPct:m[4],dayChange:value*m[4]/(100+m[4]),er:m[5],cost:Math.round(value*cr),acquired:acq,ret:{30:m[6][0],ytd:m[6][1],365:m[6][2]}}});
+  A.forEach(a=>{const hv=sum(holdings.filter(h=>h.account===a.name),h=>h.value);a.value=hv+a.cash;history[last].by[a.name]=Math.round(a.value)});
+  const RL=[["2026-09-18","AAPL",0,60,13980,8910,"LT"],["2026-08-12","COHR",0,100,9800,12100,"ST"],["2026-07-22","TSLA",2,20,5242,6110,"ST"],["2026-05-06","NVDA",0,150,18420,4650,"LT"],["2026-02-11","AMZN",1,80,17560,9870,"LT"],["2025-11-20","MSFT",1,40,16880,9980,"LT"],["2025-08-04","COHR",0,200,16100,19400,"ST"],["2025-04-15","VXUS",1,300,17820,16950,"LT"],["2025-01-28","NVDA",0,100,12900,3100,"LT"],["2024-10-02","AAPL",0,90,20250,12600,"LT"],["2024-06-17","TSLA",2,50,9100,12750,"LT"],["2024-03-05","VOO",2,30,14700,11200,"LT"],["2023-12-12","AMZN",1,100,14800,9600,"LT"],["2023-07-19","NVDA",0,60,27600,9800,"LT"]];
+  const realized=RL.map(([date,s,ai,qty,proceeds,cost,term])=>({date,symbol:s,account:A[ai].name,qty,proceeds,cost,gain:proceeds-cost,term}));
+  const trades=[{date:"2026-09-02",symbol:"COHR",side:"Buy",qty:100,price:92.1,account:A[1].name},{date:"2026-10-26",symbol:"VOO",side:"Buy",qty:12,price:548.2,account:A[0].name},{date:"2025-09-15",symbol:"VOO",side:"Buy",qty:20,price:505.1,account:A[0].name}];
+  const income=[];for(let d=new Date("2023-01-15T12:00");d<=TODAY;d.setMonth(d.getMonth()+1)){const ds=d.toISOString().slice(0,10),q=[2,5,8,11].includes(d.getMonth()),gr=1+(d.getFullYear()-2023)*0.08;
+    income.push({date:ds,account:A[0].name,type:"Dividend",amount:Math.round((q?1650:180)*gr*(0.9+R()*0.2))});
+    income.push({date:ds,account:A[1].name,type:"Dividend",amount:Math.round((q?620:60)*gr*(0.9+R()*0.2))});
+    income.push({date:ds,account:A[2].name,type:"Interest",amount:Math.round(410*gr*(0.95+R()*0.1))})}
+  const benchmarks=[{id:"sp",name:"S&P 500",levels:B.sp,dayPct:0.41},{id:"ndx",name:"Nasdaq-100",levels:B.ndx,dayPct:0.62},{id:"world",name:"Total world stocks",levels:B.world,dayPct:0.28},{id:"b6040",name:"60/40 stocks/bonds",levels:B.b6040,dayPct:0.24}];
+  return{sample:true,asOf:new Date().toISOString(),accounts:A,holdings,history,benchmarks,realized,trades,income,
+    targets:{"US stocks":60,"Intl stocks":15,"Bonds":15,"Cash & T-bills":10},
+    activity:[{date:"2026-10-26",type:"Buy",desc:"Bought 12 VOO",symbol:"VOO",qty:12,amount:-6578.4,account:A[0].name},{date:"2026-10-24",type:"Dividend/interest",desc:"MSFT dividend",symbol:"MSFT",amount:184.32,account:A[1].name},{date:"2026-10-23",type:"Deposit",desc:"Deposit from bank",amount:5000,account:A[0].name},{date:"2026-09-02",type:"Buy",desc:"Bought 100 COHR",symbol:"COHR",qty:100,amount:-9210,account:A[1].name}],
+    flags:[{level:"info",text:"COHR proxy vote due Nov 4",account:A[0].name}]};
+}
+
+/* ---------- state ---------- */
+let gper=load("gper")||"today";
+let D,sel=new Set(),range=30,prange="ytd",benchId="sp",sortKey="value",sortDir=-1,year=YEAR,targets={};
+const inSel=a=>sel.has(a);
+/* ---------- jump menu + collapsible cards ---------- */
+const JUMP=[["Today","daycard"],["Net worth","nwcard"],["Day by day","dayhist"],["Total","s-total"],["What you own","piecard"],["Attention","flagcard"],["vs S&P","sec-market"],["Gains & taxes","sec-gains"],["Income","sec-income"],["Allocation","sec-holdings"],["Holdings","s-hold"],["Realized","s-real"],["Activity","s-act"]];
+const NOCOLLAPSE=new Set(["daycard","s-total"]);
+function setupLayout(){
+  if(window._layout)return;window._layout=1;
+  document.querySelectorAll("#app section.card").forEach(sec=>{
+    const lb=sec.getAttribute("aria-labelledby");if(!sec.id&&lb)sec.id="s-"+lb.replace(/^h-/,"");
+    if(NOCOLLAPSE.has(sec.id))return;
+    let head=sec.firstElementChild;if(!head)return;
+    if(head.matches("p.label")){const w=document.createElement("div");w.className="chwrap";sec.insertBefore(w,head);w.appendChild(head);head.style.margin="0";head=w}
+    head.classList.add("chead");
+    const b=document.createElement("button");b.type="button";b.className="cbtn";b.textContent="⌄";
+    const title=(sec.querySelector(".label")||{}).textContent||"section";
+    const sync=()=>{const c=sec.classList.contains("collapsed");b.setAttribute("aria-expanded",!c);b.setAttribute("aria-label",(c?"Expand ":"Collapse ")+title.trim())};
+    b.onclick=e=>{e.stopPropagation();sec.classList.toggle("collapsed");store("col-"+sec.id,sec.classList.contains("collapsed"));sync();syncAll()};
+    head.addEventListener("click",e=>{if(sec.classList.contains("collapsed")&&!e.target.closest("button,select,input,a"))b.click()});
+    head.appendChild(b);if(load("col-"+sec.id))sec.classList.add("collapsed");sync();
+  });
+  const list=$("jumplist");
+  list.innerHTML=JUMP.filter(([,id])=>document.getElementById(id)).map(([t,id])=>`<a href="#" data-to="${id}">${t}</a>`).join("");
+  list.onclick=e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const el=document.getElementById(a.dataset.to);if(!el)return;
+    if(el.classList.contains("collapsed"))el.querySelector(".cbtn").click();
+    window._jumpTo=[...list.querySelectorAll("a")].indexOf(a);setTimeout(()=>window._jumpTo=null,1500);el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})};
+  const cards=()=>[...document.querySelectorAll("#app section.card")].filter(x=>x.querySelector(".cbtn"));
+  window.syncAll=()=>{$("jumpall").textContent=cards().every(x=>x.classList.contains("collapsed"))?"Expand all":"Collapse all"};
+  $("jumpall").onclick=()=>{const col=$("jumpall").textContent==="Collapse all";cards().forEach(x=>{if(x.classList.contains("collapsed")!==col)x.querySelector(".cbtn").click()});syncAll()};
+  syncAll();
+  // highlight the section you're in
+  const links=[...list.querySelectorAll("a")];
+  const mark=()=>{const tg=links.map(a=>document.getElementById(a.dataset.to));links.forEach((a,i)=>a.hidden=!tg[i]||tg[i].hidden);let cur=null;tg.forEach((el,i)=>{if(el&&!el.hidden&&el.offsetParent&&el.getBoundingClientRect().top<120)cur=i});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-4&&window._jumpTo!=null)cur=window._jumpTo;
+    links.forEach((a,i)=>a.classList.toggle("cur",i===cur));
+    if(cur!=null&&cur!==window._curJ){window._curJ=cur;const a=links[cur],l=list;if(a.offsetLeft<l.scrollLeft||a.offsetLeft+a.offsetWidth>l.scrollLeft+l.clientWidth)l.scrollLeft=a.offsetLeft-12}};
+  addEventListener("scroll",()=>{cancelAnimationFrame(window._mk);window._mk=requestAnimationFrame(mark)},{passive:true});mark();
+}
+function store(k,v){try{localStorage.setItem("md-"+k,JSON.stringify(v))}catch(_){}}
+function load(k){try{return JSON.parse(localStorage.getItem("md-"+k)||"null")}catch(_){return null}}
+const bench=()=>D.benchmarks.find(b=>b.id===benchId)||D.benchmarks[0];
+
+/* ---------- math ---------- */
+function seriesFor(names){const set=new Set(names);return{V:D.history.map(x=>Object.entries(x.by).reduce((s,[k,v])=>s+(set.has(k)?v:0),0)),F:D.history.map(x=>Object.entries(x.fl||{}).reduce((s,[k,v])=>s+(set.has(k)?v:0),0))}}
+function startIdx(p){const H=D.history,n=H.length-1;if(p==="all")return 0;
+  if(p==="mtd"){const m=(D.asOf||"").slice(0,7),i=H.findIndex(x=>x.d.slice(0,7)===m);return i>0?i-1:Math.max(0,n-1)}
+  if(p==="ytd"){const i=H.findIndex(x=>x.d>=YEAR+"-01-01");return Math.max(0,i-1)}
+  const t=new Date(H[n].d);t.setDate(t.getDate()-p);const i=H.findIndex(x=>new Date(x.d)>=t);return Math.max(0,i-1)}
+function xirr(cf){const f=r=>cf.reduce((s,[t,c])=>s+c/Math.pow(1+r,t/365),0);let lo=-0.99,hi=10,flo=f(lo);if(flo*f(hi)>0)return NaN;
+  for(let k=0;k<200;k++){const m=(lo+hi)/2,fm=f(m);if(flo*fm<=0)hi=m;else{lo=m;flo=fm}}return(lo+hi)/2}
+function perf(names,p,gross){
+  const {V,F}=seriesFor(names),B=bench().levels,e=V.length-1,H=D.history;let s=startIdx(p);const first=H.findIndex(x=>x.r&&names.some(n=>x.r[n]!=null));if(first>0)s=Math.max(s,first-1);
+  let idx=1,bidx=1,S=V[s],peak=1,dd=0,bpeak=1,bdd=0;const r=[],br=[],shadow=[S],own=[V[s]],dates=[H[s].d];
+  for(let t=s+1;t<=e;t++){let rt;const rr=H[t].r;if(rr&&names.some(n=>rr[n]!=null)){let num=0,den=0;names.forEach(n=>{if(rr[n]==null)return;const w=(H[t-1].by[n]||0)+Math.max((H[t].fl||{})[n]||0,0)*.5;const fr=!gross?0:(H[t].fee&&H[t].fee[n]!=null&&w>0)?H[t].fee[n]/w:((D.accounts.find(a=>a.name===n)||{}).feePct||0)/1200;num+=w*(rr[n]+fr);den+=w});rt=den?num/den:0}else rt=V[t-1]?(V[t]-F[t])/V[t-1]-1:0;const bt=B[t]/B[t-1]-1;r.push(rt);br.push(bt);idx*=1+rt;bidx*=1+bt;
+    peak=Math.max(peak,idx);dd=Math.min(dd,idx/peak-1);bpeak=Math.max(bpeak,bidx);bdd=Math.min(bdd,bidx/bpeak-1);
+    S=S*(1+bt)+F[t];shadow.push(S);own.push(V[t]);dates.push(H[t].d)}
+  const t0=new Date(H[s].d),dt=d=>(new Date(d)-t0)/864e5,n=e-s,yrs=Math.max(dt(H[e].d)/365,1/365);
+  const cf=[[0,-V[s]]];for(let t=s+1;t<=e;t++)if(F[t])cf.push([dt(H[t].d),-F[t]]);cf.push([dt(H[e].d),V[e]]);
+  const irrA=xirr(cf),irrP=yrs>=1?irrA:Math.pow(1+irrA,yrs)-1;
+  const sd=a=>{const m=sum(a,x=>x)/a.length;return Math.sqrt(sum(a,x=>(x-m)**2)/Math.max(1,a.length-1))*Math.sqrt(D.periodsPerYear||252)};
+  const ann=x=>Math.pow(1+x,1/yrs)-1,vol=sd(r),bvol=sd(br),twr=idx-1,btw=bidx-1;
+  return{twr,btw,excess:twr-btw,irr:irrP,irrAnnual:yrs>=1,shadowEnd:S,end:V[e],gap:V[e]-S,vol,bvol,dd,bdd,
+    sharpe:(ann(twr)-0.04)/vol,bsharpe:(ann(btw)-0.04)/bvol,own,shadow,dates,netFlows:sum(F.slice(s+1),x=>x),startVal:V[s],n,startDate:H[s].d,yrs}}
+
+/* ---------- charts ---------- */
+const fmtAxis=(d,span)=>{const x=new Date(d+"T12:00");return span>400?x.toLocaleDateString("en-US",{month:"short",year:"2-digit"}).replace(" "," '"):span>60?x.toLocaleDateString("en-US",{month:"short",year:"2-digit"}).replace(" "," '"):x.toLocaleDateString("en-US",{month:"short",day:"numeric"})};
+const fmtTip=(d,monthly)=>{const x=new Date(d+"T12:00");return monthly?x.toLocaleDateString("en-US",{month:"long",year:"numeric"})+(d.endsWith("-31")||d.endsWith("-30")||d.endsWith("-28")||d.endsWith("-29")?"":` (to ${x.toLocaleDateString("en-US",{month:"short",day:"numeric"})})`):x.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})};
+function chartFrame(svg){
+  let w=svg.parentElement;
+  if(!w.classList.contains("cwrap")){w=document.createElement("div");w.className="cwrap";svg.parentNode.insertBefore(w,svg);w.appendChild(svg);
+    w.insertAdjacentHTML("beforeend",`<div class="cx-y"></div><div class="cx-plot"><div class="cx-line" hidden></div><div class="cx-dots"></div></div><div class="cx-tip" hidden></div><div class="cx-axis"></div>`);}
+  return w;
+}
+function lineChart(svg,series,dates,{h=180,fmt=null,daily=false}={}){
+  const W=600,pt=10,pb=6,all=series.flatMap(s=>s.v).filter(v=>v!=null),mn=Math.min(...all),mx=Math.max(...all),pad=(mx-mn)*.12||1,lo=mn-pad,hi=mx+pad,n=dates.length;
+  const X=i=>n>1?i/(n-1)*W:0,Y=v=>pt+(1-(v-lo)/(hi-lo))*(h-pt-pb);
+  const gl=[.2,.5,.8];
+  svg.innerHTML=gl.map(f=>{const y=pt+f*(h-pt-pb);return`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1" vector-effect="non-scaling-stroke"/>`}).join("")+series.map(s=>{let pen=false;const d=s.v.map((v,i)=>{if(v==null){pen=false;return""}const c=`${pen?"L":"M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`;pen=true;return c}).join("");
+    return(s.fill&&!s.v.includes(null)?`<path d="${d}L${W},${h-pb}L0,${h-pb}Z" fill="${s.color}" opacity=".08"/>`:"")+`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" ${s.dash?'stroke-dasharray="5 4"':""} vector-effect="non-scaling-stroke"/>`}).join("");
+  const fv=fmt||(v=>usd(v));
+  svg.setAttribute("aria-label",series.map(s=>`${s.name}: ${fv(s.v.find(v=>v!=null))} to ${fv(s.v[n-1])}`).join("; ")+` (${fmtD(dates[0],true)} to ${fmtD(dates[n-1],true)})`);
+  const w=chartFrame(svg),pctX=i=>(n>1?i/(n-1):0)*100,pctY=v=>Y(v)/h*100,span=(new Date(dates[n-1])-new Date(dates[0]))/864e5,monthly=!daily&&D.periodsPerYear===12;
+  const short=fmt?(v=>fmt(v,true)):(v=>{const a=Math.abs(v);return(v<0?"−":"")+"$"+(a>=1e6?(a/1e6).toFixed(2)+"M":a>=1e4?Math.round(a/1e3)+"K":a>=1e3?(a/1e3).toFixed(1)+"K":Math.round(a))});
+  w.querySelector(".cx-y").innerHTML=gl.map(f=>{const y=pt+f*(h-pt-pb),v=hi-(y-pt)/(h-pt-pb)*(hi-lo);return`<span style="top:${y/h*100}%">${short(v)}</span>`}).join("");
+  const nt=Math.min(n,window.innerWidth<560?4:6),ticks=[...new Set(Array.from({length:nt},(_,k)=>Math.round(k*(n-1)/Math.max(1,nt-1))))];
+  w.querySelector(".cx-axis").innerHTML=ticks.map((i,k)=>`<span style="left:${pctX(i)}%;transform:translateX(${k===0?"0":k===ticks.length-1?"-100%":"-50%"})">${fmtAxis(dates[i],monthly?999:span)}</span>`).join("");
+  const dots=w.querySelector(".cx-dots");
+  const end=()=>series.filter(s=>s.v[n-1]!=null).map(s=>`<i style="left:${pctX(n-1)}%;top:${pctY(s.v[n-1])}%;background:${s.color}"></i>`).join("");
+  dots.innerHTML=end();
+  const line=w.querySelector(".cx-line"),tip=w.querySelector(".cx-tip");
+  const show=e=>{const r=svg.getBoundingClientRect();if(!r.width)return;const f=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),i=Math.round(f*(n-1));
+    line.hidden=false;line.style.left=pctX(i)+"%";
+    dots.innerHTML=series.filter(s=>s.v[i]!=null).map(s=>`<i style="left:${pctX(i)}%;top:${pctY(s.v[i])}%;background:${s.color}"></i>`).join("");
+    const rows=series.filter(s=>s.v[i]!=null).sort((a,b)=>fmt?b.v[i]-a.v[i]:0).map(s=>`<div><b style="background:${s.color}"></b>${s.name}<span class="num ${fmt?cls(s.v[i]):""}">${fv(s.v[i])}</span></div>`).join("");
+    const diff=fmt?"":series.length===2?`<div class="cx-diff">Difference<span class="num ${cls(series[0].v[i]-series[1].v[i])}">${sgn(series[0].v[i]-series[1].v[i])}</span></div>`:(i>0?`<div class="cx-diff">Since ${fmtAxis(dates[0],monthly?999:span)}<span class="num ${cls(series[0].v[i]-series[0].v[0])}">${sgn(series[0].v[i]-series[0].v[0])}</span></div>`:"");
+    tip.innerHTML=`<div class="cx-date">${fmtTip(dates[i],monthly)}</div>${rows}${diff}`;tip.hidden=false;
+    const tw=tip.offsetWidth,px=44+pctX(i)/100*(w.clientWidth-44);tip.style.left=Math.min(Math.max(0,px-tw/2),w.clientWidth-tw)+"px";};
+  const hide=()=>{line.hidden=true;tip.hidden=true;dots.innerHTML=end()};
+  svg.onpointermove=show;svg.onpointerdown=show;svg.onpointerleave=hide;
+}
+
+/* ---------- render ---------- */
+function view(){
+  const accts=D.accounts.filter(a=>inSel(a.name)),holdings=D.holdings.filter(h=>inSel(h.account)),cash=sum(accts,a=>a.cash||0);
+  const value=sum(holdings,h=>h.value)+cash,dayChange=sum(holdings,h=>h.dayChange);
+  return{accts,holdings,cash,value,dayChange,realized:(D.realized||[]).filter(r=>inSel(r.account)),income:(D.income||[]).filter(r=>inSel(r.account)),
+    activity:D.activity.filter(a=>inSel(a.account)),flags:(D.flags||[]).filter(f=>f.account?inSel(f.account):sel.size===D.accounts.length),names:[...sel]};
+}
+
+function render(){
+  markSuspicious();setupLayout();
+  const all=sel.size===D.accounts.length;
+  $("acctchips").innerHTML=`<button class="chip" data-a="__all" aria-pressed="${all}">All accounts</button>`+D.accounts.map(a=>`<button class="chip" data-a="${a.name}" aria-pressed="${!all&&sel.has(a.name)}"><span class="ck" aria-hidden="true">${!all&&sel.has(a.name)?"✓":"+"}</span>${a.name}</button>`).join("");
+  const V=view();window._V=V;
+  $("sample").hidden=!D.sample;
+  $("asof").textContent="As of "+new Date(D.asOf).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+  const LB=(D.labels||{}).primary||"Primary";$("h-total").textContent=all?`${LB} accounts · total value`:`${LB} accounts · ${sel.size} of ${D.accounts.length}`;
+  $("total").textContent=usd(V.value);
+  const dl=dayAgg((D.daily||[]).slice(-1)[0]);if(dl){V.dayChange=dl.chg}
+  const dp=V.dayChange/(V.value-V.dayChange)*100;
+  $("day").innerHTML=`<span class="${cls(dp)}">${sgn(V.dayChange)} (${pct(dp)}) today</span>`;
+  $("benchday").textContent=`${bench().name} ${pct(bench().dayPct)}`;
+  drawValue();
+  const pm={30:perf(V.names,30),ytd:perf(V.names,"ytd"),365:perf(V.names,365)};
+  $("stats").innerHTML=[["1 month",pm[30].twr],["YTD",pm.ytd.twr],["1 year",pm[365].twr]].map(([l,v])=>`<div class="stat"><small>${l}</small><b class="${cls(v)}">${pct(v*100)}</b></div>`).join("")+`<div class="stat"><small>Cash</small><b>${usd(V.cash)}</b></div>`;
+  renderToday();renderPeriod(V);renderNetWorth();renderDayByDay();renderPerf(V);renderCompare();renderOfficial();renderLeader();renderWhy(V);renderGains(V);renderTax(V);renderWash(V);renderIncome(V);renderContrib(V);renderRoth();renderAlloc(V);
+  renderPie(V);renderFlags(V,pm);
+  $("accounts").innerHTML=D.accounts.filter(a=>inSel(a.name)).map(a=>{const hs=D.holdings.filter(h=>h.account===a.name),dc=sum(hs,h=>h.dayChange),p=dc/(a.value-dc)*100;return`<div class="row${inSel(a.name)?"":" off"}"><span>${a.name}<span class="muted" style="display:block">${a.type||""}${a.feePct?` · ${a.feePct}% advisory fee`:""} · cash ${usd(a.cash||0)}</span></span><span class="num" style="text-align:right">${usd(a.value)}<span class="${cls(p)}" style="display:block;font-size:12px">${pct(p)}</span></span></div>`}).join("");
+  const m=[...V.holdings].filter(h=>h.dayChange).sort((a,b)=>Math.abs(b.dayChange)-Math.abs(a.dayChange)).slice(0,6);
+  $("movers").innerHTML=m.length?"":`<div class="row muted">No price changes since the last close. Updates on the next trading day.</div>`;if(m.length)$("movers").innerHTML=m.map(h=>`<div class="row"><span><span class="num" style="font-weight:500">${h.symbol}</span><span class="muted" style="display:block">${h.account}</span></span><span class="num ${cls(h.dayChange)}" style="text-align:right">${sgn(h.dayChange)}<span style="display:block;font-size:12px">${pct(h.dayPct)}</span></span></div>`).join("");
+  renderTable();renderRealized();
+  renderActivity(true);
+}
+
+function drawValue(){const {V}=seriesFor(window._V.names),s=startIdx(range);lineChart($("chart"),[{name:"Value",v:V.slice(s),color:"var(--accent)",fill:true}],D.history.slice(s).map(x=>x.d))}
+
+function renderPerf(V){
+  const P=perf(V.names,prange),b=bench().name,pos=P.gap>=0;
+  $("verdict").className="verdict "+(pos?"pos":"neg");
+  $("verdict").innerHTML=`<b>${pos?"Ahead of":"Behind"} the ${b} by ${usd(Math.abs(P.gap))}</b><span>${PLABEL[prange]}: your investments returned ${pct(P.twr*100)} vs ${pct(P.btw*100)} for the ${b}, ${pp((P.twr-P.btw)*100).replace("pts","points")}. Same deposits in the ${b} would be worth ${usd(P.shadowEnd)}.</span>`;
+  $("shadowname").textContent=`Same deposits in ${b}`;
+  lineChart($("shadowchart"),[{name:"Your accounts",v:P.own,color:"var(--accent)"},{name:"Shadow "+b,v:P.shadow,color:"var(--bench)",dash:true}],P.dates);
+  $("perfstats").innerHTML=[["Your return (TWR)",pct(P.twr*100),P.twr],[b,pct(P.btw*100),P.btw],["Excess",pp(P.excess*100),P.excess],[P.irrAnnual?"IRR · per year":"IRR · period",pct(P.irr*100),P.irr]].map(([l,v,x])=>`<div class="stat"><small>${l}</small><b class="${cls(x)}">${v}</b></div>`).join("");
+  $("riskstats").innerHTML=[["Volatility",`${(P.vol*100).toFixed(1)}%`,`${b} ${(P.bvol*100).toFixed(1)}%`],["Max drawdown",`−${Math.abs(P.dd*100).toFixed(1)}%`,`${b} −${Math.abs(P.bdd*100).toFixed(1)}%`],["Sharpe ratio",P.sharpe.toFixed(2),`${b} ${P.bsharpe.toFixed(2)}`],["Net deposits",sgn(P.netFlows),`over ${PLABEL[prange].toLowerCase()}`]].map(([l,v,s])=>`<div class="stat"><small>${l}</small><b>${v}</b><span class="muted">${s}</span></div>`).join("");
+}
+
+const ACOL=["#1f77b4","#d4762c","#2a9d6f","#9467bd","#c0605a","#8c8c3a"];
+function renderCompare(){
+  const H=D.history,B=bench(),s0=startIdx(prange),names=D.accounts.filter(a=>inSel(a.name)).map(a=>a.name),e=H.length-1;
+  const dates=H.slice(s0).map(x=>x.d);
+  const series=names.map((n,k)=>{const v=[];let c=null;for(let t=s0;t<=e;t++){const r=H[t].r&&H[t].r[n];if(r==null){v.push(c==null?null:c);continue}if(c==null){c=0;if(t>s0){v[v.length-1]=0}else{v.push(0);continue}}c=(1+c/100)*(1+r)*100-100;v.push(c)}
+    const first=v.findIndex(x=>x!=null);if(first>0&&v[first-1]===undefined)v[first-1]=0;return{name:n.replace(/ ··.*/,""),v,color:ACOL[D.accounts.findIndex(a=>a.name===n)%ACOL.length]}}).filter(s=>s.v.some(x=>x!=null));
+  const L=B.levels;series.push({name:B.name,v:L.slice(s0).map(x=>(x/L[s0]-1)*100),color:"var(--bench)",dash:true});
+  const fp=(v,short)=>short?(v>=0?"+":"−")+Math.abs(v).toFixed(0)+"%":pct(v,1);
+  lineChart($("cmpchart"),series,dates,{h:220,fmt:fp});
+  $("cmpperiod").textContent=PLABEL[prange];
+  $("cmplegend").innerHTML=series.map(x=>`<span><i style="background:${x.color}${x.dash?";background:repeating-linear-gradient(90deg,"+x.color+" 0 5px,transparent 5px 8px)":""}"></i>${x.name} <b class="num ${cls(x.v[x.v.length-1])}">${pct(x.v[x.v.length-1],1)}</b></span>`).join("");
+  $("cmpnote").textContent=`Cumulative time-weighted return after fees, from the reported monthly returns. Lines for accounts opened after the period starts begin at 0% in their first month, so compare their slope against the ${B.name} line from that point. Change the period with the buttons in "Performance vs benchmark".`;
+}
+function dayAgg(run){
+  if(!run)return null;const ns=[...sel].filter(n=>run.acc[n]);let chg=0,val=0,known=false;
+  ns.forEach(n=>{const a=run.acc[n];val+=a.value||0;if(a.chg!=null){chg+=a.chg;known=true}});
+  if(sel.size===D.accounts.length&&run.total&&run.total.chg!=null){chg=run.total.chg;val=run.total.value||val;known=true}
+  return known?{chg,val,pct:val-chg?chg/(val-chg)*100:0,sp:run.sp}:null;
+}
+const HOLI={"2026-01-01":"New Year's Day","2026-01-19":"Martin Luther King Jr. Day","2026-02-16":"Presidents' Day","2026-04-03":"Good Friday","2026-05-25":"Memorial Day","2026-06-19":"Juneteenth","2026-07-03":"Independence Day (observed)","2026-09-07":"Labor Day","2026-11-26":"Thanksgiving","2026-12-25":"Christmas",
+ "2027-01-01":"New Year's Day","2027-01-18":"Martin Luther King Jr. Day","2027-02-15":"Presidents' Day","2027-03-26":"Good Friday","2027-05-31":"Memorial Day","2027-06-18":"Juneteenth (observed)","2027-07-05":"Independence Day (observed)","2027-09-06":"Labor Day","2027-11-25":"Thanksgiving","2027-12-24":"Christmas (observed)"};
+function etNow(){const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",weekday:"long",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+  return{date:`${p.year}-${p.month}-${p.day}`,weekday:p.weekday,mins:+p.hour*60+ +p.minute}}
+function dayAgg(run){
+  if(!run)return null;const ns=[...sel].filter(n=>run.acc[n]);let chg=0,val=0,known=false;
+  ns.forEach(n=>{const a=run.acc[n];val+=a.value||0;if(a.chg!=null){chg+=a.chg;known=true}});
+  if(sel.size===D.accounts.length&&run.total&&run.total.chg!=null){chg=run.total.chg;val=run.total.value||val;known=true}
+  return known?{chg,val,pct:val-chg?chg/(val-chg)*100:0,sp:run.sp}:null;
+}
+const SLOTNAME={open:"Open · 9:31",midday:"Midday · 1:00",close:"Close · 4:30",full:"Update",weekly:"Update"};
+const pp2=v=>isFinite(v)?(v>=0?"+":"−")+Math.abs(v).toFixed(2)+" pts":"—";
+/* ---------- global period ---------- */
+const GLABEL={today:"Today",wtd:"This week",mtd:"This month",ytd:"Year to date",y1:"Last 12 months"};
+function pstart(){const ps=D.periodStarts||{};if(ps.wtd)return ps;const t=new Date((D.asOf||new Date().toISOString()).slice(0,10)+"T12:00"),iso=d=>d.toISOString().slice(0,10);
+  const m=new Date(t);m.setDate(t.getDate()-((t.getDay()+6)%7));const y=new Date(t);y.setDate(t.getDate()-365);
+  return{wtd:iso(m),mtd:iso(t).slice(0,8)+"01",ytd:iso(t).slice(0,4)+"-01-01",y1:iso(y)}}
+function pressSeg(id,attr,val){$(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset[attr])===String(val)))}
+function setGlobal(g,quiet){
+  gper=g;store("gper",g);pressSeg("gperiod","g",g);
+  prange={today:"mtd",wtd:"mtd",mtd:"mtd",ytd:"ytd",y1:365}[g];store("prange",prange);pressSeg("pranges","p",prange);
+  range={today:D.periodsPerYear===12?30:7,wtd:D.periodsPerYear===12?30:7,mtd:30,ytd:"ytd",y1:365}[g];store("range",range);pressSeg("ranges","r",range);
+  $("actrange").value={today:"today",wtd:"wtd",mtd:"mtd",ytd:"ytd",y1:"365"}[g];$("actcustom").hidden=true;
+  if(g!=="y1")year=YEAR;
+  if(!quiet)render();
+}
+$("gperiod").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setGlobal(b.dataset.g)});
+/* days of the period from the 3x-daily runs: last row of each date */
+function periodDays(start){const by={};(D.daily||[]).forEach(r=>{if(r.date>=start&&(r.total||Object.keys(r.acc).length))by[r.date]=r});return Object.keys(by).sort().map(d=>by[d])}
+function renderPeriod(V){
+  const g=gper,on=g!=="today";$("periodcard").hidden=!on;$("daycard").hidden=on;
+  const tl=document.querySelector('#jumplist a[data-to="daycard"],#jumplist a[data-to="periodcard"]');if(tl){tl.textContent=on?GLABEL[g]:"Today";tl.dataset.to=on?"periodcard":"daycard"}
+  if(!on)return;
+  const PS=pstart(),start=PS[g],names=V.names,B=bench().name,fd=d=>new Date(d+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  $("h-per").textContent=GLABEL[g];
+  const days=periodDays(start);let ret,sp,chg,since=null,acc=[];
+  if(g==="wtd"){
+    let gi=1,si=1;chg=0;days.forEach(r=>{const a=dayAgg(r);if(!a)return;gi*=1+a.pct/100;si*=1+(a.sp||0)/100;chg+=a.chg});ret=gi-1;sp=si-1;
+    if(!days.length||days[0].date>start)since=days.length?days[0].date:null;
+    acc=names.map(n=>{let x=1,c=0;days.forEach(r=>{const v=r.acc[n];if(v&&v.pct!=null){x*=1+v.pct/100;c+=v.chg||0}});return{n,ret:x-1,chg:c,ex:x-1-sp}});
+  }else{
+    const key={mtd:"mtd",ytd:"ytd",y1:365}[g],P=perf(names,key);ret=P.twr;sp=P.btw;chg=P.end-P.startVal-P.netFlows;
+    acc=names.map(n=>{const p=perf([n],key);return{n,ret:p.twr,chg:p.end-p.startVal-p.netFlows,ex:p.excess}});
+    var thru=D.history[D.history.length-1].d;
+  }
+  const x=ret-sp,up=chg>=0;
+  $("perasof").textContent=`${fd(start)} – ${fd((D.asOf||"").slice(0,10))}`+(since?` · tracked since ${fd(since)}`:"");
+  $("perverdict").className="verdict "+(up?"pos":"neg");
+  $("perverdict").innerHTML=`<b>${sgn(chg)} (${pct(ret*100)}) ${GLABEL[g].toLowerCase()}</b><span>${B} ${pct(sp*100)} · you're ${x>=0?"ahead":"behind"} by ${Math.abs(x*100).toFixed(2)} points${g!=="wtd"?" · from monthly statements data, through "+fd(thru):""}</span>`;
+  // best / worst day
+  const dd=days.map(r=>({d:r.date,a:dayAgg(r)})).filter(z=>z.a);const best=dd.slice().sort((a,b)=>b.a.chg-a.a.chg)[0],worst=dd.slice().sort((a,b)=>a.a.chg-b.a.chg)[0];
+  const st=[["Return",`<b class="${cls(ret)}">${pct(ret*100)}</b>`,`${B} ${pct(sp*100)}`],["Gain / loss",`<b class="${cls(chg)}">${sgn(chg)}</b>`,"market moves, not deposits"]];
+  const wd=d=>new Date(d+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}),partial=dd.length&&dd[0].d>start?` · tracked since ${fd(dd[0].d)}`:"";
+  if(g==="ytd"||g==="y1"){const H=D.history,ms=[];for(let t=1;t<H.length;t++){if(H[t].d<start||!H[t].r)continue;let num=0,den=0,c=0;names.forEach(n=>{const r=H[t].r[n];if(r==null)return;const w=H[t-1].by[n]||0;num+=w*r;den+=w;c+=w*r});if(den)ms.push({d:H[t].d,r:num/den,c})}
+    const bm=ms.slice().sort((a,b)=>b.r-a.r)[0],wm=ms.slice().sort((a,b)=>a.r-b.r)[0],mn=d=>new Date(d+"T12:00").toLocaleDateString("en-US",{month:"long"});
+    if(bm)st.push(["Best month",`<b class="${cls(bm.r)}">${pct(bm.r*100)}</b>`,`${mn(bm.d)} · about ${sgn(bm.c)}`]);if(wm&&wm!==bm)st.push(["Worst month",`<b class="${cls(wm.r)}">${pct(wm.r*100)}</b>`,`${mn(wm.d)} · about ${sgn(wm.c)}`])}
+  else{
+  if(best&&dd.length>1)st.push(["Best day",`<b class="${cls(best.a.chg)}">${sgn(best.a.chg)}</b>`,`${new Date(best.d+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})} · ${pct(best.a.pct)}${partial}`]);
+  if(worst&&dd.length>1)st.push(["Worst day",`<b class="${cls(worst.a.chg)}">${sgn(worst.a.chg)}</b>`,`${new Date(worst.d+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})} · ${pct(worst.a.pct)}${partial}`]);}
+  $("perstats").innerHTML=st.map(([l,v,s2])=>`<div class="stat"><small>${l}</small>${v}<span class="muted">${s2}</span></div>`).join("");
+  // accounts
+  const accHtml=acc.sort((a,b)=>b.chg-a.chg).map(a=>`<div class="prow"><span>${a.n}</span><span class="r ${cls(a.chg)}">${sgn(a.chg)}</span><span class="r"><span class="${cls(a.ret)}">${pct(a.ret*100)}</span> <span class="muted" style="font-size:12px">${pp(a.ex*100)}</span></span></div>`).join("");
+  // movers from period-start prices
+  const A=D.anchors||{},by={};V.holdings.forEach(h=>{const a=(A[h.symbol]||{})[g];const o=by[h.symbol]=by[h.symbol]||{s:h.symbol,name:h.name,q:0,v:0,mv:0,has:false,px:h.price,a};o.q+=h.qty;o.v+=h.value;if(a){o.mv+=h.qty*(h.price-a);o.has=true}});
+  const mv=Object.values(by).filter(o=>o.has&&Math.abs(o.mv)>=100),miss=Object.values(by).filter(o=>!o.has).length;
+  const gain=mv.filter(o=>o.mv>0).sort((a,b)=>b.mv-a.mv).slice(0,5),loss=mv.filter(o=>o.mv<0).sort((a,b)=>a.mv-b.mv).slice(0,5);
+  const mrow=o=>`<div class="prow"><span><b>${o.s}</b><span class="nm muted" style="font-size:12px">${o.name}</span></span><span class="r ${cls(o.mv)}">${sgn(o.mv)}</span><span class="r ${cls(o.mv)}">${pct((o.px/o.a-1)*100,1)}</span></div>`;
+  const none=t=>`<p class="muted" style="font-size:13px;margin:4px 0">${t}</p>`;
+  // activity in the period
+  const act=V.activity.filter(a=>a.date>=start),tr=act.filter(a=>a.type==="Buy"||a.type==="Sell");
+  const tsum={};tr.forEach(a=>{const o=tsum[a.account]=tsum[a.account]||{b:0,bv:0,s:0,sv:0};if(a.type==="Buy"){o.b++;o.bv+=a.amount||0}else{o.s++;o.sv+=a.amount||0}});
+  const trs=tr.slice().sort((a,b)=>Math.abs(b.amount||0)-Math.abs(a.amount||0)).slice(0,10);
+  const trHtml=tr.length?Object.entries(tsum).map(([n,o])=>`<div class="prow"><span>${n}</span><span class="r">${o.b?`${o.b} buy${o.b>1?"s":""} ${usd(-o.bv)}`:""}</span><span class="r">${o.s?`${o.s} sell${o.s>1?"s":""} ${usd(o.sv)}`:""}</span></div>`).join("")+
+    `<p class="psub">Largest trades</p>`+trs.map(a=>`<div class="prow"><span>${a._sus?'<b class="sus">!!!</b>':""}<span class="tag${a.type==="Sell"?" st":""}">${a.type}</span> <b>${a.symbol||""}</b><span class="nm muted" style="font-size:12px">${fmtD(a.date,true)} · ${a.qty!=null?a.qty.toLocaleString(undefined,{maximumFractionDigits:4})+" @ "+usd(a.price,2)+" · ":""}${a.account}</span></span><span class="r">${usd(Math.abs(a.amount||0))}</span><span class="r">${a.type==="Sell"?actGain(a):""}</span></div>`).join("")+
+    (tr.length>10?`<p style="margin:8px 0 0"><a href="#" id="peract">See all ${tr.length} trades in Activity ›</a></p>`:""):none("No trades in this period.");
+  // important things
+  const ev=[];act.filter(a=>a._sus).forEach(a=>ev.push(["bad",`!!! ${fmtD(a.date,true)} · ${a.type} ${sgn(a.amount,2)} · ${a.account} — ${a._sus.join("; ")}`]));
+  [["Withdrawal","Money out",-1],["Deposit","Money in",1]].forEach(([t,lbl,sg])=>{const xs=act.filter(a=>a.type===t&&!a._sus).sort((a,b)=>Math.abs(b.amount)-Math.abs(a.amount));if(!xs.length)return;
+    if(xs.length<=3)xs.forEach(a=>ev.push(["",`${fmtD(a.date,true)} · ${lbl} ${usd(Math.abs(a.amount))} · ${a.account}`]));
+    else ev.push(["",`${lbl}: ${xs.length} transfers, ${usd(Math.abs(sum(xs,a=>a.amount)))} in total. Largest: ${xs.slice(0,3).map(a=>`${usd(Math.abs(a.amount))} (${fmtD(a.date)}, ${a.account})`).join(", ")}`])});
+  const fee=-sum(act.filter(a=>a.type==="Fee"),a=>a.amount||0),div=sum(act.filter(a=>a.type==="Dividend/interest"),a=>a.amount||0);
+  if(fee>0)ev.push(["",`Fees charged: ${usd(fee,2)}`]);if(div>0)ev.push(["good",`Dividends and interest: ${usd(div,2)}`]);
+  if(worst&&worst.a.pct<=-1&&g!=="ytd"&&g!=="y1")ev.push(["bad",`Biggest drop: ${new Date(worst.d+"T12:00").toLocaleDateString("en-US",{weekday:"long"})} ${sgn(worst.a.chg)} (${pct(worst.a.pct)})`]);
+  if(Math.abs(x)>=.01)ev.push([x>=0?"good":"bad",`${x>=0?"Beat":"Trailed"} the ${B} by ${Math.abs(x*100).toFixed(2)} points`]);
+  const ord={bad:0,"":1,good:2};ev.sort((a,b)=>ord[a[0]]-ord[b[0]]);
+  $("perbody").innerHTML=`<p class="psub">What happened</p>${ev.map(([c,t])=>`<div class="evt ${c}">${t}</div>`).join("")||none("Quiet period: no money moved, no fees, nothing unusual.")}
+    <div class="pgrid"><div><p class="psub">Top gainers</p>${gain.map(mrow).join("")||none("No position gained $100+.")}</div><div><p class="psub">Top losers</p>${loss.map(mrow).join("")||none("No position lost $100+.")}</div></div>
+    ${miss&&mv.length===0?none(`Price at the start of the period isn't available yet for these holdings; it fills in after the next update.`):miss?`<p class="note">Price change on the shares you hold now, from the close before ${fd(start)}. ${miss} holdings without a starting price are left out.</p>`:`<p class="note">Price change on the shares you hold now, from the close before ${fd(start)}.</p>`}
+    <p class="psub">By account</p>${accHtml}
+    <p class="psub">Trades</p>${trHtml}`;
+  const pa=$("peract");if(pa)pa.onclick=e=>{e.preventDefault();actTypes.clear();actTypes.add("Buy");actTypes.add("Sell");renderActivity(true);$("s-act").classList.remove("collapsed");$("s-act").scrollIntoView({behavior:"smooth"})};
+}
+function renderToday(){
+  const E=etNow(),R=(D.daily||[]).filter(r=>Object.keys(r.acc).length||r.total),today=R.filter(r=>r.date===E.date),wk=E.weekday==="Saturday"||E.weekday==="Sunday";
+  const pretty=new Date(E.date+"T12:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  const msg=(t,sub)=>{$("dayverdict").className="verdict";$("dayverdict").innerHTML=`<b style="color:var(--ink)">${t}</b><span style="color:var(--sub)">${sub}</span>`;$("daydetail").hidden=true;$("dayasof").textContent=pretty};
+  if(wk||HOLI[E.date])return msg("Market closed today",HOLI[E.date]?`${HOLI[E.date]} · US markets are closed.`:`${E.weekday} · US markets reopen Monday at 9:30 AM ET.`);
+  if(!today.length)return E.mins<571?msg("Market opens at 9:30 AM ET","First update of the day at 9:31 AM ET."):msg("Waiting for today's first update","The 9:31 AM update hasn't arrived yet. It may still be running.");
+  const last=today[today.length-1],a=dayAgg(last);$("daydetail").hidden=false;
+  $("dayasof").textContent=`${pretty} · updated ${new Date(last.ts).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"})} ET`;
+  if(a){const x=a.pct-(a.sp||0);$("dayverdict").className="verdict "+(a.chg>=0?"pos":"neg");
+    $("dayverdict").innerHTML=`<b>${sgn(a.chg)} (${pct(a.pct)}) ${last.slot==="close"?"today":"so far today"}</b><span>S&amp;P 500 ${pct(a.sp||0)} · you're ${x>=0?"ahead":"behind"} by ${Math.abs(x).toFixed(2)} points</span>`}
+  $("dayslots").innerHTML=today.map(r=>{const g=dayAgg(r);if(!g)return"";const x=g.pct-(g.sp||0);return`<tr><td>${SLOTNAME[r.slot]||r.slot}</td><td class="num ${cls(g.chg)}">${sgn(g.chg)}</td><td class="num ${cls(g.pct)}">${pct(g.pct)}</td><td class="num">${pct(g.sp||0)}</td><td class="num ${cls(x)}">${pp2(x)}</td></tr>`}).join("");
+  $("dayacctlabel").textContent=`By account · ${SLOTNAME[last.slot]||"latest"}`;
+  $("dayaccts").innerHTML=[...sel].filter(n=>last.acc[n]).sort((x,y)=>(last.acc[y].chg||0)-(last.acc[x].chg||0)).map(n=>{const v=last.acc[n],x=(v.pct||0)-(last.sp||0);return`<tr><td>${n}</td><td class="num">${usd(v.value)}</td><td class="num ${cls(v.chg||0)}">${sgn(v.chg||0)}</td><td class="num ${cls(v.pct||0)}">${pct(v.pct||0)}</td><td class="num ${cls(x)}">${pp2(x)}</td></tr>`}).join("");
+}
+function renderDayByDay(){
+  const R=(D.daily||[]).filter(r=>Object.keys(r.acc).length||r.total);
+  const days=[...new Set(R.map(r=>r.date))].map(d=>{const rs=R.filter(r=>r.date===d);return rs.find(r=>r.slot==="close")||rs[rs.length-1]}).map(r=>({d:r.date,closed:r.slot==="close",...dayAgg(r)})).filter(x=>x.chg!=null);
+  $("dayhist").hidden=!days.length;if(!days.length)return;
+  let cy=0,cs=0;const you=[],spl=[];days.forEach(x=>{cy=(1+cy/100)*(1+x.pct/100)*100-100;cs=(1+cs/100)*(1+(x.sp||0)/100)*100-100;you.push(cy);spl.push(cs)});
+  if(days.length>=2)lineChart($("daychart"),[{name:"You",v:you,color:"var(--accent)"},{name:"S&P 500",v:spl,color:"var(--bench)",dash:true}],days.map(x=>x.d),{h:160,daily:true,fmt:(v,sh)=>sh?(v>=0?"+":"−")+Math.abs(v).toFixed(1)+"%":pct(v,2)});
+  $("daychart").parentElement.hidden=days.length<2;
+  const beat=days.filter(x=>x.pct>=(x.sp||0)).length,best=days.reduce((a,b)=>b.chg>a.chg?b:a),worst=days.reduce((a,b)=>b.chg<a.chg?b:a);
+  $("daystats").innerHTML=[["Days tracked",String(days.length)],["Beat the S&P",`${beat} of ${days.length}`],["Best day",`${sgn(best.chg)}`],["Worst day",`${sgn(worst.chg)}`]].map(([l,v])=>`<div class="stat"><small>${l}</small><b>${v}</b></div>`).join("");
+  $("daytable").innerHTML=days.slice(-20).reverse().map(x=>{const e=x.pct-(x.sp||0);return`<tr><td>${new Date(x.d+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}${x.closed?"":` <span class="tag st">intraday</span>`}</td><td class="num ${cls(x.chg)}">${sgn(x.chg)}</td><td class="num ${cls(x.pct)}">${pct(x.pct)}</td><td class="num">${pct(x.sp||0)}</td><td class="cell ${e>=0?"pos":"neg"}">${pp(e)}</td></tr>`}).join("");
+}
+function renderNetWorth(){
+  const X=D.external||[];$("nwcard").hidden=!X.length;if(!X.length)return;
+  const L=D.labels||{primary:"Primary",others:"Other"};
+  const inv=D.accounts.map(a=>({section:"Investments",group:L.primary,name:a.name,balance:a.value,liability:false,asOf:null,stale:false,live:true}));
+  const all=[...inv,...X.map(a=>({...a,group:a.group===L.primary?L.primary:L.others}))];
+  const net=rows=>sum(rows.filter(a=>!a.liability),a=>a.balance)-sum(rows.filter(a=>a.liability),a=>a.balance);
+  const P=all.filter(a=>a.group===L.primary),O=all.filter(a=>a.group!==L.primary),debts=sum(all.filter(a=>a.liability),a=>a.balance);
+  $("nwstats").innerHTML=[["Net worth",usd(net(all))],[`${L.primary} accounts`,usd(net(P))],[`${L.others} accounts`,usd(net(O))],["Debts",usd(debts)]].map(([l,v])=>`<div class="stat"><small>${l}</small><b>${v}</b></div>`).join("");
+  $("nwasof").textContent=D.externalAsOf?`${L.others} balances as of ${new Date(D.externalAsOf).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}`:"";
+  const age=a=>{const m=(a.asOf||"").match(/(\d\d)\/(\d\d)\/(\d{4})/);return m?new Date(+m[3],m[1]-1,+m[2]).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):""};
+  const order=["Investments","Banking","Credit Cards","Loans"];
+  const block=(title,rows)=>{if(!rows.length)return"";const secs=[...new Set([...order,...rows.map(a=>a.section)])].filter(sx=>rows.some(a=>a.section===sx));
+    return`<tr class="grp"><td>${title}</td><td class="num">${usd(net(rows))}</td><td class="muted">${rows.length} account${rows.length>1?"s":""}</td></tr>`+secs.map(sx=>{const rs=rows.filter(a=>a.section===sx).sort((a,b)=>b.balance-a.balance),liab=rs[0].liability;
+      return`<tr class="sel"><td style="padding-left:14px">${sx}</td><td class="num ${liab&&sum(rs,a=>a.balance)?"down":""}">${liab&&sum(rs,a=>a.balance)?"−":""}${usd(sum(rs,a=>a.balance))}</td><td></td></tr>`+rs.map(a=>`<tr><td style="padding-left:28px">${a.name}</td><td class="num ${a.liability&&a.balance?"down":""}">${a.liability&&a.balance?"−":""}${usd(a.balance)}</td><td>${a.stale?`<span class="tag st">stale · ${age(a)}</span>`:`<span class="muted">${a.live?"3× daily":age(a)||"daily"}</span>`}</td></tr>`).join("")}).join("")};
+  $("nwtable").innerHTML=block(`${L.primary} accounts`,P)+block(`${L.others} accounts`,O);
+  const S=D.snapshots||[];
+  if(S.length>=2){$("nwchartwrap").hidden=false;lineChart($("nwchart"),[{name:"Net worth",v:S.map(x=>x.assets-x.debts),color:"var(--accent)",fill:true}],S.map(x=>x.d),{h:160,daily:true});$("nwchartnote").textContent=""}
+  else{$("nwchartwrap").hidden=true;$("nwchartnote").textContent=`Net worth history builds from the daily 9:31 AM snapshot. ${L.primary} investment accounts also have full history in the sections below.`}
+}
+function renderOfficial(){
+  const M=D.official;$("offcard").hidden=!M;if(!M)return;
+  const yrs=(s)=>{const m=s.match(/(\w{3}) (\d+), (\d{4})/);const d=new Date(`${m[1]} ${m[2]} ${m[3]}`);return(new Date("2026-09-30")-d)/31557600000};
+  const allSel=sel.size===D.accounts.length,keep=n=>/All/.test(n)?allSel:sel.has(n);
+  const offRows=[];M.rows.filter(r=>keep(r[0])).forEach(r=>{offRows.push(r);const a=D.accounts.find(z=>z.name===r[0]&&z.feePct);if(a){const n=perf([a.name],"all"),g=perf([a.name],"all",true);offRows.push([a.name+" before advisory fee",r[1],(Math.pow((1+r[2]/100)*(1+g.twr)/(1+n.twr),1)-1)*100,r[3]])}});
+  $("off").innerHTML=offRows.map(([n,since,a,b])=>{const y=yrs(since),pa=(Math.pow(1+a/100,1/y)-1)*100,pb=(Math.pow(1+b/100,1/y)-1)*100,x=a-b;
+    return`<tr class="${/All/.test(n)?"sel":""}"><td>${n}</td><td>${since}</td><td class="num ${cls(a)}">${pct(a)}</td><td class="num">${pct(b)}</td><td class="cell ${x>=0?"pos":"neg"}">${pp(x)}</td><td class="num">${pa.toFixed(1)}% vs ${pb.toFixed(1)}%</td></tr>`}).join("");
+  const Y=M.years;
+  $("offyh").innerHTML=`<tr><th>Account</th>${Y.cols.map(c=>`<th>${c}</th>`).join("")}</tr>`;
+  $("offy").innerHTML=Y.rows.filter(r=>keep(r[0])).map(([n,v,note])=>`<tr class="${/All/.test(n)?"sel":""}"><td>${n}${note?`<span class="nm">${note}</span>`:""}</td>${v.map((x,i)=>x==null?"<td class='muted'>—</td>":`<td class="cell ${x>=Y.sp[i]?"pos":"neg"}">${pct(x)}</td>`).join("")}</tr>`).join("")+
+    `<tr><td><b>S&amp;P 500</b></td>${Y.sp.map(x=>`<td class="num">${pct(x)}</td>`).join("")}</tr>`;
+  $("offnote").textContent=M.note+". Partial years compare against the full-year S&P unless noted.";
+}
+function renderLeader(){
+  const b=bench().name;$("leadperiod").textContent=PLABEL[prange];$("gridbench").textContent=b;
+  const rows=D.accounts.filter(a=>inSel(a.name)).map(a=>({name:a.name,sel:false,p:perf([a.name],prange)}));
+  if(sel.size>1)rows.push({name:sel.size===D.accounts.length?"All accounts":"Selected accounts",sel:true,p:perf([...sel],prange),combo:true});
+  D.accounts.filter(a=>inSel(a.name)&&a.feePct).forEach(a=>rows.push({name:a.name+" before advisory fee",sel:false,p:perf([a.name],prange,true),combo:true}));
+  rows.sort((x,y)=>y.p.excess-x.p.excess);
+  $("lead").innerHTML=rows.map(r=>`<tr class="${r.sel&&!r.combo?"sel":""}"><td>${r.combo?"<i>"+r.name+"</i>":r.name}</td><td class="num ${cls(r.p.twr)}">${pct(r.p.twr*100)}</td><td class="num">${pct(r.p.btw*100)}</td><td class="cell ${r.p.excess>=0?"pos":"neg"}">${pp(r.p.excess*100)}</td><td class="num">${pct(r.p.irr*100)}</td><td class="num ${cls(r.p.gap)}">${sgn(r.p.gap)}</td></tr>`).join("");
+  const per=[30,"ytd",365,1095,"all"],names=[...D.accounts.filter(a=>inSel(a.name)).map(a=>[a.name,[a.name]]),...(sel.size>1?[[sel.size===D.accounts.length?"All accounts":"Selected accounts",[...sel]]]:[])];
+  $("grid").innerHTML=names.map(([n,ns])=>`<tr class="${/accounts$/.test(n)?"sel":""}"><td>${n}</td>${per.map(p=>{const x=perf(ns,p).excess*100;return`<td class="cell ${x>=0?"pos":"neg"}">${pp(x)}</td>`}).join("")}</tr>`).join("");
+  $("gridnote").textContent=`Green means the account beat the ${b} over that period after all fees. *3Y covers data since ${fmtD(D.history[startIdx(1095)].d,true)}.`;
+}
+
+function renderWhy(V){
+  const key=prange==="mtd"?"mtd":prange===30?30:prange==="ytd"?"ytd":365,P=perf(V.names,key),rb=P.btw*100,inv=V.value,hasRet=V.holdings.some(h=>h.ret);
+  if(hasRet){
+    const by={};V.holdings.forEach(h=>{const o=by[h.symbol]=by[h.symbol]||{v:0,r:h.ret[key]};o.v+=h.value});
+    const c=Object.entries(by).map(([s,o])=>[s,o.v/inv*(o.r-rb)]);c.push(["Cash",V.cash/inv*(0-rb)]);c.sort((a,b)=>b[1]-a[1]);
+    const top=[...c.slice(0,4),...c.slice(-4).filter(x=>!c.slice(0,4).includes(x))],mx=Math.max(.1,...top.map(x=>Math.abs(x[1])));
+    $("h-attr").textContent="What drove the difference";
+    $("attr").innerHTML=`<div class="muted">${PLABEL[key]} vs ${bench().name} ${pct(rb)}</div>`+top.map(([s,v])=>`<div class="hbar"><span class="num">${s}</span><span class="track mid"><i style="${v>=0?"left:50%":"right:50%"};width:${Math.abs(v)/mx*50}%;background:${v>=0?"var(--up)":"var(--down)"}"></i></span><span class="num ${cls(v)}" style="text-align:right">${pp(v)}</span></div>`).join("");
+  }else{
+    const by={};V.holdings.forEach(h=>{by[h.symbol]=(by[h.symbol]||0)+(h.value-h.cost)});
+    const c=Object.entries(by).sort((a,b)=>b[1]-a[1]),top=[...c.slice(0,5),...c.slice(-3).filter(x=>x[1]<0)],mx=Math.max(1,...top.map(x=>Math.abs(x[1])));
+    $("h-attr").textContent="Biggest unrealized gains and losses";
+    $("attr").innerHTML=`<div class="muted">Open positions, by dollar gain since purchase</div>`+top.map(([s,v])=>`<div class="hbar"><span class="num">${s}</span><span class="track mid"><i style="${v>=0?"left:50%":"right:50%"};width:${Math.abs(v)/mx*50}%;background:${v>=0?"var(--up)":"var(--down)"}"></i></span><span class="num ${cls(v)}" style="text-align:right">${sgn(v)}</span></div>`).join("");
+    $("attr").nextElementSibling.textContent="Positions held in several accounts are combined.";
+  }
+  const sfCard=$("sf").closest("section");
+  if(hasRet){sfCard.hidden=false;
+    const grp=k=>{const hs=V.holdings.filter(h=>h.kind===k),w=sum(hs,h=>h.value);return w?[sum(hs,h=>h.value*h.ret[key])/w,w]:[NaN,0]};
+    const [sr,sw]=grp("stock"),[fr,fw]=grp("fund"),items=[["Stocks",sr],["Funds",fr],[bench().name,rb]].filter(x=>isFinite(x[1])),m2=Math.max(1,...items.map(x=>Math.abs(x[1])));
+    $("sf").innerHTML=`<div class="muted">${PLABEL[key]} return</div>`+items.map(([l,v],i)=>`<div class="hbar"><span>${l}</span><span class="track"><i style="left:0;width:${Math.abs(v)/m2*100}%;background:${i===2?"var(--bench)":v>=0?"var(--up)":"var(--down)"}"></i></span><span class="num ${cls(v)}" style="text-align:right">${pct(v,1)}</span></div>`).join("");
+    $("sfnote").textContent=sw&&fw?`Individual stocks are ${usd(sw)} (${(sw/V.value*100).toFixed(0)}%) of these accounts.`:"";
+  }else{const st=sum(V.holdings.filter(h=>h.kind==="stock"),h=>h.value),fd=sum(V.holdings.filter(h=>h.kind==="fund"),h=>h.value),items=[["Individual stocks",st],["Funds",fd],["Cash",V.cash]],m2=Math.max(...items.map(x=>x[1]));
+    $("h-sf").textContent="What you own";
+    $("sf").innerHTML=items.map(([l,v])=>`<div class="hbar" style="grid-template-columns:110px minmax(0,1fr) 120px"><span>${l}</span><span class="track"><i style="left:0;width:${v/m2*100}%;background:var(--accent)"></i></span><span class="num" style="text-align:right">${usd(v)} · ${(v/V.value*100).toFixed(0)}%</span></div>`).join("");
+    $("sfnote").textContent=`${new Set(V.holdings.filter(h=>h.kind==="stock").map(h=>h.symbol)).size} different stocks across these accounts.`;}
+  const lost=V.cash*P.btw;
+  $("cashdrag").innerHTML=`<span class="${lost>0?"down":"up"}">${lost>0?"−":"+"}${usd(Math.abs(lost))}</span>`;
+  $("cashsub").textContent=`${usd(V.cash)} in cash and money market funds (${(V.cash/V.value*100).toFixed(1)}%). Invested in the ${bench().name} over ${PLABEL[key].toLowerCase()}, it would have returned about ${pct(P.btw*100)}, minus the interest the cash earned. Estimate based on today's cash balance.`;
+  const fund=sum(V.holdings,h=>h.value*(h.er||0)/100),feeAccts=V.accts.filter(a=>a.feePct),adv=sum(feeAccts,a=>a.value*a.feePct/100),tot=fund+adv;
+  $("feedrag").textContent=usd(tot)+" / yr";
+  if(!feeAccts.length){$("feesub").textContent=`Fund expense ratios on known funds. No advisory fees in the selected accounts.`;$("feerows").innerHTML=`<div class="row"><span>Fund expense ratios</span><span class="num">${usd(fund)}</span></div>`;}
+  else{
+    const H=D.history,paid=n=>{let x=0;for(let t=1;t<H.length;t++){const a=D.accounts.find(z=>z.name===n);if(H[t].r&&H[t].r[n]!=null)x+=(H[t].fee&&H[t].fee[n]!=null)?H[t].fee[n]:((H[t-1].by[n]||0)+Math.max((H[t].fl||{})[n]||0,0)*.5)*a.feePct/1200}return x};
+    $("feesub").textContent=`Advisory fee of ${feeAccts.map(a=>a.feePct+"% on "+a.name).join(", ")}, plus fund expense ratios. Reported returns are after fees.`;
+    $("feerows").innerHTML=`<div class="row"><span>Advisory fees per year (at today's value)</span><span class="num">${usd(adv)}</span></div><div class="row"><span>Fund expense ratios</span><span class="num">${usd(fund)}</span></div>`+
+      feeAccts.map(a=>{const N=perf([a.name],"all"),G=perf([a.name],"all",true),Pn=perf([a.name],prange),Pg=perf([a.name],prange,true);
+        return`<p class="label" style="margin:14px 0 4px">${a.name} · with vs without the fee</p>
+        <div class="tablewrap"><table style="min-width:420px"><thead><tr><th>Period</th><th>With fee</th><th>Without fee</th><th>${bench().name}</th></tr></thead><tbody>
+        <tr><td>${PLABEL[prange]}</td><td class="num ${cls(Pn.twr)}">${pct(Pn.twr*100)}</td><td class="num ${cls(Pg.twr)}">${pct(Pg.twr*100)}</td><td class="num">${pct(Pn.btw*100)}</td></tr>
+        <tr><td>Since ${fmtD(H[Math.min(H.length-1,startIdx("all")+1+H.findIndex(x=>x.r&&x.r[a.name]!=null)-1)].d,true).replace(/ \d+,/,"")}</td><td class="num ${cls(N.twr)}">${pct(N.twr*100)}</td><td class="num ${cls(G.twr)}">${pct(G.twr*100)}</td><td class="num">${pct(N.btw*100)}</td></tr>
+        <tr><td>Dollars</td><td class="num">${sgn(N.gap)} vs S&amp;P</td><td class="num">${sgn(N.gap+paid(a.name))} vs S&amp;P</td><td class="num muted">fees paid ≈ ${usd(paid(a.name))}</td></tr>
+        </tbody></table></div>`}).join("")+`<p class="note">"Without fee" adds each month's advisory fee back to that month's return. Fee sources: ${D.feeNote||"estimated at "+feeAccts[0].feePct+"% a year of the balance"}</p>`;
+  }
+}
+
+function renderGains(V){
+  const hs=V.holdings,cost=sum(hs,h=>h.cost),g=sum(hs,h=>h.value)-cost,lt=sum(hs.filter(h=>isLong(h.acquired)),h=>h.value-h.cost),st=g-lt;
+  $("unrl").innerHTML=`<span class="${cls(g)}">${sgn(g)}</span>`;$("unrlsub").textContent=`${pct(g/cost*100)} on ${usd(cost)} cost basis`;
+  $("unrlsplit").innerHTML=hs.some(h=>h.acquired)?`<span><span class="tag">LT</span><b class="num ${cls(lt)}">${sgn(lt)}</b></span><span><span class="tag st">ST</span><b class="num ${cls(st)}">${sgn(st)}</b></span>`:`<span class="muted">Long/short-term split needs purchase dates (lot details)</span>`;
+  const ry=V.realized.filter(r=>r.date.startsWith(String(YEAR))),rg=sum(ry,r=>r.gain),rlt=sum(ry.filter(r=>r.term==="LT"),r=>r.gain);
+  $("ylabel").textContent=YEAR;$("rlz").innerHTML=`<span class="${cls(rg)}">${sgn(rg)}</span>`;$("rlzsub").textContent=ry.some(r=>r.proceeds!=null)?`${ry.length} sale${ry.length===1?"":"s"} · ${usd(sum(ry,r=>r.proceeds||0))} proceeds`:`Year to date, from the realized gain/loss report`;
+  $("rlzsplit").innerHTML=`<span><span class="tag">LT</span><b class="num ${cls(rlt)}">${sgn(rlt)}</b></span><span><span class="tag st">ST</span><b class="num ${cls(rg-rlt)}">${sgn(rg-rlt)}</b></span>`;
+  const years=[...new Set(V.realized.map(r=>+r.date.slice(0,4)))].sort((a,b)=>b-a),tot=years.map(y=>[y,sum(V.realized.filter(r=>r.date.startsWith(String(y))),r=>r.gain)]),mx=Math.max(1,...tot.map(t=>Math.abs(t[1])));
+  $("ybars").innerHTML=`<div class="muted" style="margin-top:6px">Realized by year</div>`+tot.map(([y,v])=>`<div class="hbar"><span class="num">${y}</span><span class="track"><i style="left:0;width:${Math.abs(v)/mx*100}%;background:${v>=0?"var(--up)":"var(--down)"}"></i></span><span class="num ${cls(v)}" style="text-align:right">${sgn(v)}</span></div>`).join("");
+}
+
+function renderTax(V){
+  const taxable=new Set(D.accounts.filter(a=>a.taxable).map(a=>a.name)),ry=V.realized.filter(r=>taxable.has(r.account)&&r.date.startsWith(String(YEAR)));
+  let st=sum(ry.filter(r=>r.term==="ST"),r=>r.gain),lt=sum(ry.filter(r=>r.term==="LT"),r=>r.gain);
+  if(st<0&&lt>0){const o=Math.min(-st,lt);lt-=o;st+=o}else if(lt<0&&st>0){const o=Math.min(-lt,st);st-=o;lt+=o}
+  const sr=(+$("strate").value||0)/100,lr=(+$("ltrate").value||0)/100,ni=$("niit").checked?.038:0;
+  const net=st+lt,tax=Math.max(0,st)*(sr+ni)+Math.max(0,lt)*(lr+ni);
+  if(!ry.length){$("tax").textContent="$0";$("taxsub").textContent="No taxable sales this year in the selected accounts.";return}
+  $("tax").textContent=usd(tax);
+  $("taxsub").textContent=net<0?`Net loss of ${usd(-net)}. Up to $3,000 offsets ordinary income; the rest carries forward.`:`On ${usd(Math.max(0,st))} net short-term and ${usd(Math.max(0,lt))} net long-term gains in ${YEAR}.`;
+}
+
+function renderWash(V){
+  const taxable=new Set(D.accounts.filter(a=>a.taxable).map(a=>a.name)),out=[];
+  V.realized.filter(r=>r.gain<0&&taxable.has(r.account)&&(TODAY-new Date(r.date))/864e5<400).forEach(r=>{
+    (D.trades||[]).filter(t=>t.side==="Buy"&&t.symbol===r.symbol&&Math.abs(new Date(t.date)-new Date(r.date))/864e5<=30).forEach(t=>{
+      const ira=!D.accounts.find(a=>a.name===t.account)?.taxable;
+      out.push(`<div class="flag ${ira?"bad":"warn"}"><b aria-hidden="true">!</b><span>${r.symbol}: ${usd(-r.gain)} loss sold ${fmtD(r.date,true)} in ${r.account}, bought again ${fmtD(t.date)} in ${t.account}.${ira?" Because the repurchase was in an IRA, the loss is permanently disallowed.":" The loss is deferred into the new shares' cost basis."}</span></div>`)})});
+  const soon=V.holdings.filter(h=>taxable.has(h.account)&&h.value<h.cost);
+  const fl=V.flags.filter(f=>/wash/i.test(f.text)).map(f=>`<div class="flag warn"><b aria-hidden="true">!</b><span>${f.text}</span></div>`).join("");
+  if(!(D.trades||[]).length&&!D.sample){$("wash").innerHTML=(fl||`<div class="flag info"><b aria-hidden="true">✓</b><span>No wash sales reported for the selected accounts.</span></div>`);return}
+  $("wash").innerHTML=(out.join("")||`<div class="flag info"><b aria-hidden="true">✓</b><span>No wash sales found in the last 12 months.</span></div>`)+
+    (soon.length?`<p class="muted" style="margin:10px 0 0">If you sell ${soon.map(h=>h.symbol).join(", ")} at a loss, don't buy it again until 31 days later, in any account.</p>`:"");
+}
+
+function renderIncome(V){
+  const months=[];for(let i=11;i>=0;i--){const d=new Date(TODAY.getFullYear(),TODAY.getMonth()-i,1);months.push(d.toISOString().slice(0,7))}
+  const tot=months.map(m=>sum(V.income.filter(x=>x.date.startsWith(m)),x=>x.amount)),mx=Math.max(1,...tot)*1.1,W=600,h=160,bw=W/12,svg=$("incchart");
+  svg.innerHTML=[.5,1].map(f=>`<line x1="0" x2="${W}" y1="${(1-f/1.1)*h}" y2="${(1-f/1.1)*h}" stroke="var(--line)" vector-effect="non-scaling-stroke"/>`).join("")+
+    tot.map((v,i)=>{const bh=v/mx*h;return`<rect x="${i*bw+bw*.18}" y="${h-bh}" width="${bw*.64}" height="${bh}" fill="var(--accent)" opacity="${i===11?1:.55}"/>`}).join("");
+  svg.setAttribute("aria-label","Monthly income, last 12 months: "+tot.map((v,i)=>`${months[i]} ${usd(v)}`).join(", "));
+  const w=chartFrame(svg),short=v=>"$"+(v>=1e3?(v/1e3).toFixed(1)+"K":Math.round(v));
+  w.querySelector(".cx-y").innerHTML=[.5,1].map(f=>`<span style="top:${(1-f/1.1)*100}%">${short(mx/1.1*f)}</span>`).join("");
+  const lab=m=>new Date(m+"-15T12:00").toLocaleDateString("en-US",{month:"short"});
+  w.querySelector(".cx-axis").innerHTML=months.map((m,i)=>`<span style="left:${(i+.5)/12*100}%;transform:translateX(-50%)">${window.innerWidth<560&&i%2?"":lab(m)}</span>`).join("");
+  const tip=w.querySelector(".cx-tip"),dots=w.querySelector(".cx-dots");w.querySelector(".cx-line").hidden=true;
+  svg.onpointermove=svg.onpointerdown=e=>{const r=svg.getBoundingClientRect();if(!r.width)return;const i=Math.min(11,Math.max(0,Math.floor((e.clientX-r.left)/r.width*12))),m=months[i];
+    dots.innerHTML=`<div class="cx-bar" style="left:${i/12*100}%;width:${100/12}%"></div>`;
+    const by={};V.income.filter(x=>x.date.startsWith(m)).forEach(x=>by[x.account]=(by[x.account]||0)+x.amount);
+    tip.innerHTML=`<div class="cx-date">${new Date(m+"-15T12:00").toLocaleDateString("en-US",{month:"long",year:"numeric"})}</div>`+Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div>${k}<span class="num">${usd(v,0)}</span></div>`).join("")+`<div class="cx-diff">Total<span class="num">${usd(tot[i],0)}</span></div>`;
+    tip.hidden=false;const tw=tip.offsetWidth,px=44+(i+.5)/12*(w.clientWidth-44);tip.style.left=Math.min(Math.max(0,px-tw/2),w.clientWidth-tw)+"px"};
+  svg.onpointerleave=()=>{tip.hidden=true;dots.innerHTML=""};
+  const t12=sum(tot,x=>x),ytd=sum(V.income.filter(x=>x.date.startsWith(String(YEAR))),x=>x.amount),py=sum(V.income.filter(x=>x.date.startsWith(String(YEAR-1))&&x.date.slice(5)<=TODAY.toISOString().slice(5,10)),x=>x.amount);
+  $("incstats").innerHTML=[["Last 12 months",usd(t12),""],["Year to date",usd(ytd),py?`${pct((ytd/py-1)*100,0)} vs last year`:""],["Per month avg",usd(t12/12),""],["Yield",(t12/V.value*100).toFixed(2)+"%","on current value"]].map(([l,v,s])=>`<div class="stat"><small>${l}</small><b>${v}</b><span class="muted">${s}</span></div>`).join("");
+}
+
+function renderContrib(V){
+  const S=seriesFor(V.names),f0=Math.max(0,S.V.findIndex((v,i)=>v>0||S.F[i])-1),val=S.V.slice(f0),F=S.F.slice(f0),dts=D.history.slice(f0).map(x=>x.d);let c=val[0];const put=val.map((v,i)=>i?(c+=F[i]):c);
+  lineChart($("contribchart"),[{name:"Value",v:val,color:"var(--accent)",fill:true},{name:"Money put in",v:put,color:"var(--sub)",dash:true}],dts,{h:180});
+  const net=put[put.length-1]-put[0],grow=val[val.length-1]-put[put.length-1];
+  $("contribstats").innerHTML=`<div class="stat"><small>Net deposits since ${fmtD(dts[1]||dts[0],true).replace(/ \d+,/,"")}</small><b>${sgn(net)}</b></div><div class="stat"><small>Market growth</small><b class="${cls(grow)}">${sgn(grow)}</b></div>`;
+}
+
+function renderRoth(){
+  const roth=D.accounts.find(a=>inSel(a.name)&&/roth/i.test(a.type||a.name));if(!roth){$("rothyear").textContent=YEAR;$("rothamt").textContent=D.accounts.some(a=>/roth/i.test(a.type||a.name))?"No Roth IRA selected":"No Roth IRA";$("rothbar").style.width="0";$("rothsub").textContent=`The ${YEAR} IRA contribution limit is ${usd(IRA_LIMIT[YEAR]||7500)} if you open or fund a Roth elsewhere.`;$("rothhist").innerHTML="";return}
+  const by={};D.history.forEach(x=>{const f=(x.fl||{})[roth.name];if(f>0)by[x.d.slice(0,4)]=(by[x.d.slice(0,4)]||0)+f});
+  const lim=IRA_LIMIT[YEAR]||7500,c=by[YEAR]||0;
+  $("rothyear").textContent=YEAR;$("rothamt").innerHTML=`${usd(c)} <span class="muted">of ${usd(lim)}</span>`;
+  $("rothbar").style.width=Math.min(100,c/lim*100)+"%";
+  $("rothsub").textContent=c<lim?`${usd(lim-c)} left. You can contribute for ${YEAR} until April 15, ${YEAR+1}. The limit is higher if you're 50 or older; check that your income is under the Roth limit.`:`Maxed out for ${YEAR}.`;
+  $("rothhist").innerHTML=Object.keys(by).sort().reverse().map(y=>`<div class="row"><span class="num">${y}</span><span class="num">${usd(by[y])} <span class="muted">/ ${usd(IRA_LIMIT[y]||lim)}</span></span></div>`).join("");
+}
+
+function renderAlloc(V){
+  const by={};V.holdings.forEach(h=>by[h.cls]=(by[h.cls]||0)+h.value);by["Cash & T-bills"]=(by["Cash & T-bills"]||0)+V.cash;
+  const AL=Object.entries(by).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]),tot=V.value;
+  $("allocbar").innerHTML=AL.map(([k,v],i)=>`<span title="${k}" style="flex:${v};background:${COLORS[i%6]}"></span>`).join("");
+  $("rebal").innerHTML=AL.map(([k,v],i)=>`<tr><td><i style="display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;background:${COLORS[i%6]}"></i>${k}</td><td class="num">${usd(v)}</td><td class="num"><span class="wbar" style="width:${Math.max(2,v/tot*80)}px"></span>${(v/tot*100).toFixed(1)}%</td></tr>`).join("");
+  $("targetnote").textContent="";
+}
+
+let pieCash=+(load("piecash")??1),pieOpen=0;
+function renderPie(V){
+  $("piecash").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.c===pieCash));
+  const by={};V.holdings.forEach(h=>{const o=by[h.symbol]=by[h.symbol]||{s:h.symbol,name:h.name,v:0,n:new Set()};o.v+=h.value;o.n.add(h.account)});
+  const all=Object.values(by).sort((a,b)=>b.v-a.v),top=all.slice(0,7),rest=all.slice(7),inv=sum(all,x=>x.v);
+  const sl=top.map((x,i)=>({k:x.s,label:x.s,sub:x.name,v:x.v,c:`var(--c${i+1})`,accts:[...x.n]}));
+  if(rest.length)sl.push({k:"_o",label:`Other (${rest.length})`,sub:rest.slice(0,6).map(x=>x.s).join(", ")+(rest.length>6?"…":""),v:sum(rest,x=>x.v),c:"var(--c-other)"});
+  if(pieCash&&V.cash>0)sl.push({k:"_c",label:"Cash",sub:"Cash and money market funds",v:V.cash,c:"var(--c-cash)"});
+  const T=sum(sl,x=>x.v)||1,cx=110,cy=110,R=100,r=62;let a0=-Math.PI/2;
+  const arc=(a,b)=>{const big=b-a>Math.PI?1:0,p=(t,rr)=>[cx+rr*Math.cos(t),cy+rr*Math.sin(t)].map(n=>n.toFixed(2)).join(" ");
+    if(b-a>=2*Math.PI-1e-6)b=a+2*Math.PI-1e-4;return`M${p(a,R)} A${R} ${R} 0 ${big} 1 ${p(b,R)} L${p(b,r)} A${r} ${r} 0 ${big} 0 ${p(a,r)} Z`};
+  const center=(t,u,w)=>`<text x="110" y="${w?98:104}" text-anchor="middle" style="font:600 20px var(--sans,system-ui);fill:var(--ink)">${t}</text><text x="110" y="${w?118:126}" text-anchor="middle" style="font:600 12px var(--sans,system-ui);fill:var(--ink)">${u}</text>${w?`<text x="110" y="134" text-anchor="middle" style="font:12px var(--sans,system-ui);fill:var(--sub)">${w}</text>`:""}`;
+  const def=center(usd(T).replace(/\.\d+$/,""),`${all.length} holdings${pieCash?" + cash":""}`);
+  $("piesvg").innerHTML=sl.map((x,i)=>{const a=a0,b=a0+x.v/T*2*Math.PI;a0=b;return`<path d="${arc(a,b)}" fill="${x.c}" data-i="${i}"><title>${x.label}: ${(x.v/T*100).toFixed(1)}% · ${usd(x.v)}</title></path>`}).join("")+`<g id="piectr">${def}</g>`;
+  // legend: Other is collapsible -> next 10 stocks + a nested "Other" with the rest (scrollable)
+  const oi=sl.findIndex(x=>x.k==="_o"),lvl1=rest.slice(0,10),lvl2=rest.slice(10),P=v=>`${(v/T*100).toFixed(v/T<.001?2:1)}%`;
+  const sub=(x,ind)=>`<tr class="pl-sub" data-i="${oi}"><td style="padding-left:${ind}px"><b>${x.s}</b> <span class="muted sub" style="font-size:12px">${x.name.length>30?x.name.slice(0,30)+"…":x.name}</span></td><td class="pc">${P(x.v)}</td><td class="dv">${usd(x.v)}</td></tr>`;
+  const chev=o=>`<i class="pl-chev" aria-hidden="true" style="transform:rotate(${o?90:0}deg)">›</i>`;
+  $("pieleg").innerHTML=sl.map((x,i)=>{
+    const row=`<tr data-i="${i}"${i===oi?` class="pl-toggle" data-t="1" tabindex="0" role="button" aria-expanded="${pieOpen>=1}"`:""}><td><span class="sw" style="background:${x.c}"></span><b>${x.label}</b>${i===oi?chev(pieOpen>=1):""}<br><span class="muted sub" style="font-size:12px;padding-left:18px">${i===oi?(pieOpen>=1?"Click to collapse":"Click to see what's inside"):x.sub.length>34?x.sub.slice(0,34)+"…":x.sub}</span></td><td class="pc">${P(x.v)}</td><td class="dv">${usd(x.v)}</td></tr>`;
+    if(i!==oi||pieOpen<1)return row;
+    let h=row+lvl1.map(y=>sub(y,30)).join("");
+    if(lvl2.length){h+=`<tr class="pl-toggle pl-sub" data-i="${oi}" data-t="2" tabindex="0" role="button" aria-expanded="${pieOpen>=2}"><td style="padding-left:30px"><b>Other (${lvl2.length})</b>${chev(pieOpen>=2)}<br><span class="muted sub" style="font-size:12px">${pieOpen>=2?"Click to collapse":lvl2.slice(0,5).map(y=>y.s).join(", ")+"…"}</span></td><td class="pc">${P(sum(lvl2,y=>y.v))}</td><td class="dv">${usd(sum(lvl2,y=>y.v))}</td></tr>`;
+      if(pieOpen>=2)h+=`<tr class="pl-sub" data-i="${oi}"><td colspan="3" style="padding:0"><div class="pl-scroll"><table class="pleg">${lvl2.map(y=>sub(y,48)).join("")}</table></div></td></tr>`}
+    return h}).join("");
+  $("pieleg").onclick=e=>{const t=e.target.closest(".pl-toggle");if(!t)return;const lv=+t.dataset.t;pieOpen=pieOpen>=lv?lv-1:lv;renderPie(V)};
+  $("pieleg").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest(".pl-toggle")){e.preventDefault();e.target.click()}};
+  // hover: highlight; on Other, a popover lists its top contributors
+  const tip=$("pietip"),showTip=(i,ev)=>{if(i!==oi||!rest.length){tip.hidden=true;return}
+    const o=sum(rest,y=>y.v);tip.innerHTML=`<b>Inside "Other" · ${P(o)}</b><table>${rest.slice(0,8).map(y=>`<tr><td>${y.s}</td><td class="pc">${P(y.v)}</td><td class="dv">${usd(y.v)}</td></tr>`).join("")}</table><span class="muted">+ ${Math.max(0,rest.length-8)} more · biggest is ${(rest[0].v/o*100).toFixed(0)}% of Other</span>`;
+    tip.hidden=false;const box=$("piecard").getBoundingClientRect(),w=tip.offsetWidth,hgt=tip.offsetHeight;let x=ev.clientX-box.left+14,y=ev.clientY-box.top+14;
+    if(x+w>box.width-8)x=ev.clientX-box.left-w-14;if(y+hgt>box.height-8)y=box.height-hgt-8;tip.style.left=Math.max(8,x)+"px";tip.style.top=Math.max(8,y)+"px"};
+  const hi=(i,ev)=>{const svg=$("piesvg");svg.classList.toggle("hov",i!=null);svg.querySelectorAll("path").forEach(p=>p.classList.toggle("on",+p.dataset.i===i));$("pieleg").querySelectorAll(":scope > tbody > tr, :scope > tr").forEach(t=>t.classList.toggle("on",+t.dataset.i===i&&!t.classList.contains("pl-sub")));
+    $("piectr").innerHTML=i==null?def:center(P(sl[i].v),sl[i].label,usd(sl[i].v));if(i==null)tip.hidden=true;else if(ev&&ev.target.closest("#piesvg"))showTip(i,ev);else tip.hidden=true};
+  $("piesvg").onmousemove=e=>{const t=e.target.closest("path");hi(t?+t.dataset.i:null,e)};$("piesvg").onpointerleave=e=>{if(e.pointerType==="mouse")hi(null)};$("piesvg").onclick=e=>{const t=e.target.closest("path");hi(t?+t.dataset.i:null,e)};
+  $("pieleg").onmouseover=e=>{const t=e.target.closest("tr[data-i]");hi(t?+t.dataset.i:null,e)};$("pieleg").onpointerleave=e=>{if(e.pointerType==="mouse")hi(null)};
+  const t1=top[0];$("pienote").textContent=t1?`Largest holding: ${t1.s} at ${(t1.v/T*100).toFixed(1)}%. Top 7 together: ${(sum(top,x=>x.v)/T*100).toFixed(0)}%. Shares of the same stock in different accounts are combined.`:"";
+}
+document.addEventListener("click",e=>{if(!e.target.closest("#piesvg")&&!$("pietip").hidden){$("pietip").hidden=true}});
+$("piecash").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;pieCash=+b.dataset.c;store("piecash",pieCash);$("piecash").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderPie(window._V)});
+function renderFlags(V,pm){
+  const F=V.flags.map(f=>({...f})),all=sel.size===D.accounts.length,by={},B=bench().name;
+  const tbl=(head,rows)=>`<div class="tablewrap"><table class="ft"><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  // cash
+  const cp=V.cash/V.value*100,Py=perf(V.names,"ytd");
+  if(cp>10)F.push({level:"info",text:`${cp.toFixed(0)}% of ${all?"your money":"these accounts"} is in cash or money market funds (${usd(V.cash)})`,
+    detail:`<p>Cash and money market funds are safe and earn interest, but they don't grow with the stock market. This year the ${B} returned ${pct(Py.btw*100)}; ${usd(V.cash)} invested at that return would have earned about ${usd(V.cash*Py.btw)}, before subtracting the interest the cash earned.</p>`+
+      tbl(["Account","Cash","Share of account"],V.accts.filter(a=>a.cash>1000).sort((a,b)=>b.cash-a.cash).map(a=>[a.name,`<span class="num">${usd(a.cash)}</span>`,`<span class="num">${(a.cash/a.value*100).toFixed(0)}%</span>`]))+
+      `<p class="muted">Cash in a money market fund is included here. This is a description of your allocation, not a recommendation.</p>`});
+  // concentration
+  V.holdings.filter(h=>h.kind!=="fund").forEach(h=>(by[h.symbol]=by[h.symbol]||[]).push(h));
+  Object.entries(by).forEach(([s,hs])=>{const v=sum(hs,h=>h.value),w=v/V.value*100;if(w>15)F.push({level:"warn",text:`${s} is ${w.toFixed(0)}% of ${all?"the portfolio":"selected accounts"}`,
+    detail:`<p>A single stock above about 15% of a portfolio means its swings move your whole balance: a 20% drop in ${s} would cost about ${usd(v*.2)}.</p>`+
+      tbl(["Account","Shares","Value","Unrealized"],hs.map(h=>[h.account,`<span class="num">${h.qty.toLocaleString()}</span>`,`<span class="num">${usd(h.value)}</span>`,`<span class="num ${cls(h.value-h.cost)}">${sgn(h.value-h.cost)}</span>`]))});});
+  // behind benchmark
+  if(Py.excess<-0.02){const rows=V.names.map(n=>[n,perf([n],"ytd")]).sort((a,b)=>a[1].excess-b[1].excess);
+    F.push({level:"bad",text:`Behind the ${B} by ${Math.abs(Py.excess*100).toFixed(1)} points this year (${usd(Math.abs(Py.gap))})`,
+      detail:`<p>Year to date your investments returned ${pct(Py.twr*100)} (time-weighted, after fees) vs ${pct(Py.btw*100)} for the ${B}. If your starting balance and every deposit this year had gone into the ${B}, you'd have ${usd(Math.abs(Py.gap))} ${Py.gap<0?"more":"less"}.</p>`+
+      tbl(["Account","Return","vs "+B,"Dollars"],rows.map(([n,p])=>[n,`<span class="num ${cls(p.twr)}">${pct(p.twr*100)}</span>`,`<span class="num ${cls(p.excess)}">${pp(p.excess*100)}</span>`,`<span class="num ${cls(p.gap)}">${sgn(p.gap)}</span>`]))+
+      `<p class="muted">Common reasons: cash holdings, advisory fees, and stock picks that lagged the index. See "Are you beating the market?" below for the breakdown.</p>`});}
+  // big movers today: aggregated per symbol, only moves that matter in dollars
+  const mv={};V.holdings.forEach(h=>{const m=mv[h.symbol]=mv[h.symbol]||{s:h.symbol,name:h.name,pct:h.dayPct,chg:0,val:0,rows:[]};m.chg+=h.dayChange||0;m.val+=h.value;m.rows.push(h)});
+  const big=Math.max(1000,V.value*.001);
+  Object.values(mv).filter(m=>(Math.abs(m.pct)>=5&&Math.abs(m.chg)>=500)||Math.abs(m.chg)>=big).sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg)).slice(0,5).forEach(m=>
+    F.push({level:m.chg<0?"bad":"good",text:`${m.s} ${m.chg<0?"fell":"rose"} ${pct(m.pct)} today (${sgn(m.chg)})`,
+      detail:`<p>${m.name}. Flagged because the move was large in dollars for your portfolio (over ${usd(big)}, or over 5% and $500).</p>`+tbl(["Account","Shares","Value","Today"],m.rows.map(h=>[h.account,`<span class="num">${h.qty.toLocaleString()}</span>`,`<span class="num">${usd(h.value)}</span>`,`<span class="num ${cls(h.dayChange)}">${sgn(h.dayChange)}</span>`]))}));
+  // turning long-term soon (only gains worth caring about)
+  V.holdings.forEach(h=>{const d=(TODAY-new Date(h.acquired))/864e5,g=h.value-h.cost;if(h.acquired&&g>=1000&&d>305&&d<=365)F.push({level:"info",text:`${h.symbol} turns long-term in ${Math.round(365-d)} days (${sgn(g)} gain) · ${h.account}`,detail:`<p>Gains on shares held more than a year are taxed at the lower long-term rate. Selling before then would make this ${sgn(g)} gain short-term.</p>`})});
+  // ahead of benchmark
+  if(Py.excess>0.02)F.push({level:"good",text:`Ahead of the ${B} by ${(Py.excess*100).toFixed(1)} points this year (${usd(Math.abs(Py.gap))})`});
+  // suspicious activity, last 30 days
+  const sus=V.activity.filter(a=>a._sus&&(TODAY-new Date(a.date))/864e5<=30);
+  if(sus.length)F.push({level:"bad",text:`!!! ${sus.length} suspicious activit${sus.length>1?"ies":"y"} in the last 30 days`,detail:`<p>These look unusual compared with your history. Check them in the Activity section below and with your brokerage.</p>`+tbl(["Date","Account","Amount","Why"],sus.map(a=>[fmtD(a.date,true),a.account,`<span class="num">${sgn(a.amount,2)}</span>`,a._sus.join("; ")]))});
+  // tax-loss candidates
+  const tx=new Set(D.accounts.filter(a=>a.taxable).map(a=>a.name)),hv=V.holdings.filter(h=>tx.has(h.account)&&h.value-h.cost<-250).sort((a,b)=>(a.value-a.cost)-(b.value-b.cost));
+  const tot=sum(hv,h=>h.value-h.cost);if(hv.length&&tot<=-1000){F.push({level:"info",text:`Unrealized losses in taxable accounts: ${hv.slice(0,4).map(h=>`${h.symbol} (${sgn(h.value-h.cost)})`).join(", ")}${hv.length>4?` and ${hv.length-4} more`:""}`,
+    detail:`<p>These positions are below what you paid, ${sgn(tot)} in total. Selling a position at a loss in a taxable account realizes the loss, which can offset gains realized this year (and up to $3,000 of ordinary income). Losses in IRAs don't count, so only taxable accounts are listed.</p>`+
+      tbl(["Holding","Account","Value","Cost","Loss"],hv.map(h=>[`<b class="num">${h.symbol}</b>`,h.account,`<span class="num">${usd(h.value)}</span>`,`<span class="num">${usd(h.cost)}</span>`,`<span class="num down">${sgn(h.value-h.cost)} (${pct((h.value/h.cost-1)*100,1)})</span>`]))+
+      `<p class="muted">Wash-sale rule: buying the same security within 30 days before or after the sale, in any of your accounts including IRAs, disallows the loss. Not tax advice; check with your CPA.</p>`});}
+  $("flagcard").hidden=!F.length;
+  const ORD={bad:0,warn:1,info:2,good:3};F.sort((a,b)=>ORD[a.level]-ORD[b.level]);
+  const one=x=>x.detail?`<details class="flag ${x.level}"><summary><b aria-hidden="true">${{warn:"!",bad:"↓",info:"•",good:"↑"}[x.level]}</b><span>${x.text}</span><i class="chev" aria-hidden="true">›</i></summary><div class="fd">${x.detail}</div></details>`:
+    `<div class="flag ${x.level}"><b aria-hidden="true">${{warn:"!",bad:"↓",info:"•",good:"↑"}[x.level]}</b><span>${x.text}</span></div>`;
+  const grp=[["Needs a look",F.filter(x=>x.level==="bad"||x.level==="warn")],["Good to know",F.filter(x=>x.level==="info")],["Good news",F.filter(x=>x.level==="good")]].filter(g=>g[1].length);
+  $("flags").innerHTML=grp.map(([h,xs])=>(grp.length>1?`<p class="fgh">${h}</p>`:"")+xs.map(one).join("")).join("");
+}
+
+const COLS=[["symbol","Holding"],["qty","Qty"],["value","Value"],["weight","Weight"],["dayPct","Day"],["cost","Cost basis"],["gain","Unrealized"],["gainPct","Return"],["er","Fee"],["acquired","Held"]];
+function renderTable(){
+  const V=window._V,q=$("q").value.trim().toUpperCase();
+  $("thead").innerHTML=COLS.map(([k,l])=>`<th class="th" tabindex="0" data-k="${k}" aria-sort="${sortKey===k?(sortDir>0?"ascending":"descending"):"none"}">${l}${sortKey===k?(sortDir>0?" ↑":" ↓"):""}</th>`).join("");
+  const rows=V.holdings.map(h=>({...h,weight:h.value/V.value*100,gain:h.value-h.cost,gainPct:(h.value/h.cost-1)*100})).filter(h=>!q||h.symbol.includes(q)||h.name.toUpperCase().includes(q))
+    .sort((a,b)=>(typeof a[sortKey]==="string"?a[sortKey].localeCompare(b[sortKey]):a[sortKey]-b[sortKey])*sortDir);
+  const held=d=>{if(!d)return"—";const m=Math.round((TODAY-new Date(d))/2629746e3);return m<12?`${m} mo`:`${(m/12).toFixed(1)} yr`};
+  $("tbody").innerHTML=rows.map(h=>`<tr><td><span class="sym">${h.symbol}</span><span class="nm">${h.name} · ${h.account}</span></td><td class="num">${h.qty.toLocaleString(undefined,{maximumFractionDigits:3})}</td><td class="num">${usd(h.value)}</td><td class="num"><span class="wbar" style="width:${Math.max(2,h.weight*2)}px"></span>${h.weight.toFixed(1)}%</td><td class="num ${cls(h.dayPct)}">${pct(h.dayPct)}</td><td class="num">${usd(h.cost)}</td><td class="num ${cls(h.gain)}">${sgn(h.gain)}</td><td class="num ${cls(h.gainPct)}">${pct(h.gainPct)}</td><td class="num">${h.er?h.er.toFixed(2)+"%":"—"}</td><td>${held(h.acquired)}${h.acquired?` <span class="tag${isLong(h.acquired)?"":" st"}">${isLong(h.acquired)?"LT":"ST"}</span>`:""}</td></tr>`).join("")||`<tr><td colspan="10" style="text-align:left;color:var(--sub)">No holdings match</td></tr>`;
+  if(rows.length){const T={v:sum(rows,h=>h.value),c:sum(rows,h=>h.cost)};$("tbody").insertAdjacentHTML("beforeend",`<tr style="font-weight:500"><td>Total</td><td></td><td class="num">${usd(T.v)}</td><td></td><td></td><td class="num">${usd(T.c)}</td><td class="num ${cls(T.v-T.c)}">${sgn(T.v-T.c)}</td><td class="num ${cls(T.v-T.c)}">${pct((T.v/T.c-1)*100)}</td><td></td><td></td></tr>`)}
+}
+
+function renderRealized(){
+  const V=window._V,years=[...new Set(V.realized.map(r=>+r.date.slice(0,4)))].sort((a,b)=>b-a);if(!years.includes(year))year=years[0]||YEAR;
+  $("year").innerHTML=years.map(y=>`<option value="${y}"${y===year?" selected":""}>${y}</option>`).join("");
+  const rs=V.realized.filter(r=>r.date.startsWith(String(year))).sort((a,b)=>b.date.localeCompare(a.date));
+  $("rbody").innerHTML=rs.map(r=>`<tr><td><span class="sym">${r.symbol}</span><span class="nm">${fmtD(r.date)} · ${r.account}</span></td><td class="num">${r.qty==null?"—":r.qty.toLocaleString()}</td><td class="num">${usd(r.proceeds)}</td><td class="num">${usd(r.cost)}</td><td class="num ${cls(r.gain)}">${sgn(r.gain)}</td><td><span class="tag${r.term==="LT"?"":" st"}">${r.term}</span></td></tr>`).join("")+
+    (rs.length?`<tr style="font-weight:500"><td>Total ${year}</td><td></td><td class="num">${rs.some(r=>r.proceeds!=null)?usd(sum(rs,r=>r.proceeds||0)):"—"}</td><td class="num">${rs.some(r=>r.cost!=null)?usd(sum(rs,r=>r.cost||0)):"—"}</td><td class="num ${cls(sum(rs,r=>r.gain))}">${sgn(sum(rs,r=>r.gain))}</td><td></td></tr>`:`<tr><td colspan="6" style="text-align:left;color:var(--sub)">No sales in ${year} for these accounts</td></tr>`);
+}
+
+/* ---------- activity ---------- */
+const ACT_TYPES=["Buy","Sell","Deposit","Withdrawal","Dividend/interest","Fee","Other"];
+let actTypes=new Set(),actLimit=50;
+/* Suspicious activity: compares each item with your own history and marks it !!! with the reason. */
+function markSuspicious(){
+  if(D._susDone)return;D._susDone=1;
+  const A=[...(D.activity||[])].sort((a,b)=>a.date.localeCompare(b.date)),acct=Object.fromEntries(D.accounts.map(a=>[a.name,a]));
+  const internal=a=>/\bTr (To|From)\b|Funds Received|Transfer \/ Adjustment/i.test(a.desc||""),dest=a=>((a.desc||"").match(/(?:bank|Wire[^·]*)\s*(··\w+)/i)||[])[1];
+  const seen=new Set(),outs=[],fees={},keyset={},add=(a,r)=>(a._sus=a._sus||[]).push(r);
+  A.forEach(a=>{
+    const amt=a.amount||0,d=dest(a),t=new Date(a.date+"T12:00");
+    if(a.type==="Withdrawal"&&!internal(a)&&!/month total/i.test(a.desc||"")){
+      if(d&&!seen.has(d))add(a,`money sent to a bank (${d}) never used before`);
+      if(/wire/i.test(a.desc||""))add(a,"outgoing wire");
+      const prior=outs.filter(o=>(t-o.t)/864e5<=365).map(o=>o.v),mx=Math.max(0,...prior);
+      if(prior.length>=2&&-amt>=10000&&-amt>1.5*mx)add(a,`largest withdrawal in a year (${usd(-amt)} vs previous max ${usd(mx)})`);
+      if(a.pending&&-amt>=10000)add(a,"large pending withdrawal");
+      outs.push({t,v:-amt})}
+    if(d)seen.add(d);
+    if(a.type==="Fee"&&/advisory/i.test(a.desc||"")){
+      const ac=acct[a.account],lbl=((a.desc||"").match(/Fee (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/)||[])[1]||"",mo=a.date.slice(0,4)+"-"+(lbl?String("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(lbl)/3+1).padStart(2,"0"):a.date.slice(5,7)),f=fees[a.account]=fees[a.account]||{};
+      if(ac&&!ac.feePct&&amt<0)add(a,"advisory fee in an account that isn't managed");
+      (f[mo]=f[mo]||[]).push(a)}
+    if(a.type==="Fee"&&!/advisory/i.test(a.desc||"")&&-amt>=100)add(a,`unusual fee of ${usd(-amt,2)}`);
+    if(["Withdrawal","Deposit","Fee","Other"].includes(a.type)&&!/month total/i.test(a.desc||"")){const k=[a.date,a.account,a.type,amt,a.desc].join("|");if(keyset[k])add(a,"looks like a duplicate of another entry the same day");keyset[k]=1}
+    if((a.type==="Buy"||a.type==="Sell")&&a.qty&&a.price&&a.amount){const m=Math.abs(a.amount),tol=Math.max(50,.03*m);if(Math.abs(m-Math.abs(a.qty*a.price))>tol&&Math.abs(m-Math.abs(a.qty*a.price/100))>tol)add(a,"amount doesn't match shares × price")}
+  });
+  // advisory fees: brokers pro-rate fees on deposits/withdrawals, so compare each month's NET total with the prior 6 months
+  Object.values(fees).forEach(f=>{const ms=Object.keys(f).sort(),tot=m=>-sum(f[m],x=>x.amount||0);
+    ms.forEach((m,i)=>{const prev=ms.slice(Math.max(0,i-6),i).map(tot).sort((x,y)=>x-y),med=prev[Math.floor(prev.length/2)],t=tot(m);
+      if(prev.length>=3&&t>1.5*med&&t-med>=100)f[m].filter(x=>x.amount<0).forEach(x=>add(x,`advisory fees for ${m} total ${usd(t,2)}, ${(t/med).toFixed(1)}× the usual ${usd(med,2)}`));
+      const amts={};f[m].forEach(x=>{const k=x.amount;if(k<-50&&amts[k])add(x,"same advisory fee charged twice this month");amts[k]=1})})});
+}
+function actRows(){
+  const V=window._V,rng=$("actrange").value,q=$("actq").value.trim().toUpperCase(),today=new Date(D.asOf||Date.now());
+  let from=null,to=null;
+  const PS=pstart();
+  if(rng==="today"||rng==="wtd"||rng==="mtd")from=new Date((rng==="today"?(D.asOf||"").slice(0,10):PS[rng])+"T00:00");
+  else if(rng==="ytd")from=new Date(today.getFullYear(),0,1);else if(rng==="custom"){from=$("actfrom").value?new Date($("actfrom").value+"T00:00"):null;to=$("actto").value?new Date($("actto").value+"T23:59"):null}
+  else if(rng!=="all"){from=new Date(today);from.setDate(from.getDate()-(+rng))}
+  return V.activity.filter(a=>{const d=new Date(a.date+"T12:00");return(!from||d>=from)&&(!to||d<=to)&&(!actTypes.size||actTypes.has(a.type)||(actTypes.has("!!!")&&a._sus))&&(!q||(a.symbol||"").toUpperCase().includes(q)||(a.desc||"").toUpperCase().includes(q))})
+    .sort((a,b)=>b.date.localeCompare(a.date));
+}
+function actGain(a){
+  if(a.type==="Sell"){if(a.gain==null)return a.pending?`<span class="muted">pending</span>`:"—";return`<span class="${cls(a.gain)}">${sgn(a.gain,2)}</span>${a.term?` <span class="tag${a.term==="LT"?"":" st"}">${a.term}</span>`:""}`}
+  if(a.type==="Buy"&&a.symbol&&a.price&&a.qty){const h=D.holdings.find(h=>h.symbol===a.symbol&&h.account===a.account)||D.holdings.find(h=>h.symbol===a.symbol);if(!h)return"—";
+    const g=(h.price-a.price)*a.qty,p=(h.price/a.price-1)*100;return`<span class="${cls(g)}" title="If still held at today's price of ${usd(h.price,2)}">${sgn(g,2)}</span><span class="nm" style="text-align:right">${pct(p,1)} since bought</span>`}
+  return"";
+}
+function renderActivity(reset){
+  if(reset)actLimit=50;
+  const V=window._V,present=new Set(V.activity.map(a=>a.type)),types=ACT_TYPES.filter(t=>present.has(t)),nSus=V.activity.filter(a=>a._sus).length;
+  $("acttypes").innerHTML=`<button class="chip" data-t="" aria-pressed="${!actTypes.size}">All types</button>`+types.map(t=>`<button class="chip" data-t="${t}" aria-pressed="${actTypes.has(t)}">${t}</button>`).join("")+(nSus?`<button class="chip" data-t="!!!" aria-pressed="${actTypes.has("!!!")}">!!! Suspicious (${nSus})</button>`:"");
+  const rows=actRows(),by={};rows.forEach(a=>{by[a.type]=by[a.type]||{n:0,amt:0};by[a.type].n++;by[a.type].amt+=a.amount||0});
+  $("actsum").innerHTML=Object.entries(by).map(([t,o])=>`<span><span class="tag">${t}</span><b class="num">${o.n}</b><span class="muted">${o.amt?sgn(o.amt):""}</span></span>`).join("");
+  const showAcct=sel.size>1;
+  $("activity").innerHTML=rows.slice(0,actLimit).map(a=>`<tr${a._sus?' class="susrow"':""}><td class="num">${fmtD(a.date,true)}</td><td><span class="tag${a.type==="Sell"||a.type==="Withdrawal"||a.type==="Fee"?" st":""}">${a.type}</span></td><td style="white-space:normal;min-width:220px">${a._sus?`<b class="sus" title="${a._sus.join("; ")}">!!!</b>`:""}${a.desc||""}${a._sus?`<span class="susr">${a._sus.join("; ")}</span>`:""}${showAcct?`<span class="nm">${a.account}</span>`:""}</td><td class="num">${a.symbol||""}</td><td class="num">${a.qty!=null?a.qty.toLocaleString(undefined,{maximumFractionDigits:4}):""}</td><td class="num">${a.price!=null?usd(a.price,2):""}</td><td class="num ${a.amount>=0?"up":"down"}">${a.amount!=null?sgn(a.amount,2):""}</td><td class="num">${actGain(a)}</td></tr>`).join("")||`<tr><td colspan="8" style="text-align:left;color:var(--sub)">No activity matches these filters</td></tr>`;
+  $("actcount").textContent=rows.length?`Showing ${Math.min(actLimit,rows.length)} of ${rows.length}`:"";
+  $("actmore").hidden=rows.length<=actLimit;
+  $("actnote").textContent=D.activityNote||"";
+}
+$("acttypes").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const t=b.dataset.t;if(!t)actTypes.clear();else actTypes.has(t)?actTypes.delete(t):actTypes.add(t);renderActivity(true)});
+$("actrange").addEventListener("change",()=>{$("actcustom").hidden=$("actrange").value!=="custom";renderActivity(true)});
+["actfrom","actto","actq"].forEach(id=>$(id).addEventListener("input",()=>renderActivity(true)));
+$("actmore").addEventListener("click",()=>{actLimit+=100;renderActivity()});
+
+/* ---------- events ---------- */
+const seg=(id,attr,set)=>$(id).addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;$(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));const v=b.dataset[attr];set(isNaN(+v)?v:+v)});
+seg("ranges","r",v=>{range=v;store("range",v);drawValue()});
+seg("pranges","p",v=>{prange=v;store("prange",v);render()});
+$("benchsel").addEventListener("change",e=>{benchId=e.target.value;store("bench",benchId);render()});
+$("acctchips").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const a=b.dataset.a,all=sel.size===D.accounts.length;
+  if(a==="__all")sel=new Set(D.accounts.map(x=>x.name));else if(all)sel=new Set([a]);else{sel.has(a)?sel.delete(a):sel.add(a);if(!sel.size)sel=new Set(D.accounts.map(x=>x.name))}
+  render()});
+$("thead").addEventListener("click",e=>{const t=e.target.closest("th");if(!t)return;const k=t.dataset.k;sortDir=sortKey===k?-sortDir:(k==="symbol"?1:-1);sortKey=k;renderTable()});
+$("thead").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();e.target.click()}});
+$("q").addEventListener("input",renderTable);
+$("year").addEventListener("change",e=>{year=+e.target.value;renderRealized()});
+["strate","ltrate","niit"].forEach(id=>$(id).addEventListener("input",()=>renderTax(window._V)));
+
+
+function boot(data){
+  D=data;const names=D.accounts.map(a=>a.name);sel=new Set(names);targets={...(D.targets||{})};
+  
+  const t=load("targets");if(t&&typeof t==="object")targets={...targets,...t};
+  const r=load("range");if(r!=null)range=r;const p=load("prange");if(p!=null)prange=p;const b=load("bench");if(b&&D.benchmarks.some(x=>x.id===b))benchId=b;
+  $("ranges").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.r)===String(range)));
+  $("pranges").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.p)===String(prange)));
+  setGlobal(gper,true);
+  $("benchsel").innerHTML=D.benchmarks.map(x=>`<option value="${x.id}"${x.id===benchId?" selected":""}>vs ${x.name}</option>`).join("");
+  $("ranges").querySelector('[data-r="7"]').hidden=(D.periodsPerYear===12);$("benchsel").hidden=D.benchmarks.length<2;
+  render();
+}
+/* ---------- encrypted data: key comes from the link's #fragment (never sent to a server) or the unlock form ---------- */
+const KEY_RE=/^[A-Za-z0-9_-]{43}$/;
+const ub64=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((s.length+3)%4)),c=>c.charCodeAt(0));
+async function decrypt(keyStr){
+  const res=await fetch("vault.json",{cache:"no-store"});if(!res.ok)throw new Error("nodata");
+  const env=await res.json(),key=await crypto.subtle.importKey("raw",ub64(keyStr),"AES-GCM",false,["decrypt"]);
+  const gz=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub64(env.iv)},key,ub64(env.ct));
+  const txt=await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  return JSON.parse(txt);
+}
+function showApp(j,keyStr,remember){
+  if(keyStr&&remember){try{localStorage.setItem("md-key",keyStr)}catch(_){}}
+  $("lock").hidden=true;$("app").hidden=false;$("lockout").hidden=!keyStr;boot(j);
+}
+function showLock(msg){$("app").hidden=true;$("lock").hidden=false;if(msg)$("lockerr").textContent=msg;$("lockkey").focus()}
+async function tryKey(k,remember,silent){
+  k=(k||"").trim().replace(/^#/,"");
+  if(!KEY_RE.test(k)){if(!silent)$("lockerr").textContent="That doesn't look like a valid key. Check you copied all 43 characters.";return false}
+  try{const j=await decrypt(k);showApp(j,k,remember);return true}
+  catch(e){if(!silent)$("lockerr").textContent=e.message==="nodata"?"The data file couldn't be loaded. Try again in a minute.":"That key doesn't open this dashboard.";return false}
+}
+$("lockform").addEventListener("submit",e=>{e.preventDefault();$("lockerr").textContent="";tryKey($("lockkey").value,$("lockremember").checked)});
+$("lockkey").addEventListener("input",()=>{$("lockerr").textContent=""});
+$("locksample").addEventListener("click",()=>{$("lock").hidden=true;$("app").hidden=false;$("lockout").hidden=true;boot(sample())});
+$("lockout").addEventListener("click",()=>{try{localStorage.removeItem("md-key")}catch(_){}location.hash="";showLock("Key removed from this device.")});
+(async()=>{
+  const fromHash=(location.hash||"").slice(1);let stored=null;try{stored=localStorage.getItem("md-key")}catch(_){}
+  if(fromHash&&await tryKey(fromHash,true,true))return;
+  if(stored&&await tryKey(stored,false,true))return;
+  showLock(fromHash?"The key in this link doesn't open this dashboard.":"");
+})();
+</script>
+</body>
+</html>
